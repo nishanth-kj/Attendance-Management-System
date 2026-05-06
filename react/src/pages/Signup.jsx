@@ -28,12 +28,12 @@ const Signup = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-50 p-4">
-            <div className="w-full max-w-sm bg-white p-6 rounded shadow border border-gray-200">
-                <h2 className="text-xl font-semibold text-center mb-6 text-gray-800">Create Account</h2>
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-background p-4 transition-all">
+            <div className="w-full max-w-sm bg-card p-8 rounded-lg shadow-sm border border-border">
+                <h2 className="text-2xl font-display font-semibold text-center mb-8 text-foreground">Create Account</h2>
 
                 {error && (
-                    <div className="mb-4 text-sm text-red-600 bg-red-50 p-2 rounded border border-red-200 text-center">
+                    <div className="mb-6 text-sm text-destructive bg-destructive/10 p-3 rounded-md border border-destructive/20 text-center">
                         {error}
                     </div>
                 )}
@@ -41,9 +41,9 @@ const Signup = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Role Selection */}
                     <div>
-                        <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Select Role</label>
-                        <div className="flex rounded shadow-sm">
-                            {[2, 3].map((role, idx) => {
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2 ml-1">Select Role</label>
+                        <div className="flex rounded-md shadow-sm overflow-hidden border border-border">
+                            {[2, 3].map((role) => {
                                 const labels = { 2: 'Admin', 3: 'User' };
                                 const isSelected = formData.role === role;
                                 return (
@@ -51,10 +51,10 @@ const Signup = () => {
                                         key={role}
                                         type="button"
                                         onClick={() => setFormData({ ...formData, role })}
-                                        className={`flex-1 py-1.5 text-xs font-medium border ${isSelected
-                                                ? 'bg-blue-600 text-white border-blue-600 z-10'
-                                                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-                                            } ${idx === 0 ? 'rounded-l' : 'rounded-r'} focus:outline-none`}
+                                        className={`flex-1 py-2.5 text-xs font-bold transition-all ${isSelected
+                                                ? 'bg-primary text-primary-foreground'
+                                                : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'
+                                            } focus:outline-none`}
                                     >
                                         {labels[role]}
                                     </button>
@@ -64,36 +64,36 @@ const Signup = () => {
                     </div>
 
                     <div>
-                        <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Username</label>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Username</label>
                         <input
                             type="text"
                             required
                             placeholder="DataEnterr01"
-                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                            className="w-full px-4 py-2.5 bg-secondary/50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
                             value={formData.username}
                             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Email Address</label>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Email Address</label>
                         <input
                             type="email"
                             required
                             placeholder="user@example.com"
-                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                            className="w-full px-4 py-2.5 bg-secondary/50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Password</label>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Password</label>
                         <input
                             type="password"
                             required
                             placeholder="••••••••"
-                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                            className="w-full px-4 py-2.5 bg-secondary/50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         />
@@ -102,14 +102,14 @@ const Signup = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-2 mt-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        className="w-full py-3 mt-4 bg-primary text-primary-foreground rounded-md text-sm font-bold hover:opacity-90 transition-all disabled:opacity-70 shadow-lg shadow-primary/20"
                     >
                         {loading ? 'Creating Account...' : 'Sign Up'}
                     </button>
 
-                    <div className="text-center mt-4">
-                        <Link to="/login" className="text-xs text-blue-600 hover:text-blue-800 font-medium">
-                            Already have an account? Sign In
+                    <div className="text-center mt-6">
+                        <Link to="/login" className="text-sm text-muted-foreground hover:text-primary font-medium transition-colors">
+                            Already have an account? <span className="underline decoration-border hover:decoration-primary">Sign In</span>
                         </Link>
                     </div>
                 </form>

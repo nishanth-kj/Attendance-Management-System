@@ -11,7 +11,7 @@ const Layout = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-50 overflow-hidden">
+        <div className="flex h-screen bg-background text-foreground overflow-hidden transition-all">
             {/* Sidebar */}
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 

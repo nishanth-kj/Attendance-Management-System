@@ -34,29 +34,29 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-50 p-4">
-            <div className="w-full max-w-sm bg-white p-8 rounded shadow-sm border border-gray-200">
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-background p-4 transition-all">
+            <div className="w-full max-w-sm bg-card p-8 rounded-lg shadow-sm border border-border">
                 <div className="text-center mb-8">
-                    <h2 className="text-2xl font-semibold text-gray-800">Welcome Back</h2>
-                    <p className="text-sm text-gray-500 mt-1">Please sign in to continue</p>
+                    <h2 className="text-2xl font-display font-semibold text-foreground">Welcome Back</h2>
+                    <p className="text-sm text-muted-foreground mt-1">Please sign in to continue</p>
                 </div>
 
                 {error && (
-                    <div className="mb-6 text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200 text-center">
+                    <div className="mb-6 text-sm text-destructive bg-destructive/10 p-3 rounded-md border border-destructive/20 text-center">
                         {error}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">
                             Username
                         </label>
                         <input
                             type="text"
                             placeholder="Enter your username"
                             required
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-400"
+                            className="w-full px-5 py-3 bg-secondary/50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
                             value={formData.username}
                             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                         />
@@ -64,7 +64,7 @@ const Login = () => {
 
                     <div>
                         <div className="flex justify-between items-center mb-1.5">
-                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide">
+                            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide ml-1">
                                 Password
                             </label>
                         </div>
@@ -72,7 +72,7 @@ const Login = () => {
                             type="password"
                             placeholder="••••••••"
                             required
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-400"
+                            className="w-full px-5 py-3 bg-secondary/50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         />
@@ -81,41 +81,41 @@ const Login = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-2.5 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 transition-all disabled:opacity-70 text-sm"
+                        className="w-full py-3.5 bg-primary text-primary-foreground rounded-md font-bold hover:opacity-90 focus:ring-4 focus:ring-primary/20 transition-all disabled:opacity-70 text-sm shadow-lg shadow-primary/20"
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
 
                     <div className="text-center mt-6">
-                        <Link to="/signup" className="text-sm text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                            First time here? <span className="underline decoration-gray-300 hover:decoration-blue-600">Create an account</span>
+                        <Link to="/signup" className="text-sm text-muted-foreground hover:text-primary font-medium transition-colors">
+                            First time here? <span className="underline decoration-border hover:decoration-primary">Create an account</span>
                         </Link>
                     </div>
 
                     {/* Demo Accounts */}
-                    <div className="mt-8 pt-6 border-t border-gray-100">
-                        <p className="text-[10px] text-center text-gray-400 font-bold uppercase tracking-wider mb-3">
+                    <div className="mt-8 pt-6 border-t border-border">
+                        <p className="text-[10px] text-center text-muted-foreground font-bold uppercase tracking-wider mb-3">
                             Click to Auto-Fill Demo
                         </p>
                         <div className="flex justify-center gap-2">
                             <button
                                 type="button"
                                 onClick={() => fillDemo('admin', 'admin')}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+                                className="px-4 py-2 text-xs font-medium text-foreground bg-secondary hover:bg-secondary/80 border border-border rounded-md transition-colors"
+                            >
+                                Super Admin
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => fillDemo('ADMIN_user', 'ADMIN123')}
+                                className="px-4 py-2 text-xs font-medium text-foreground bg-secondary hover:bg-secondary/80 border border-border rounded-md transition-colors"
                             >
                                 Admin
                             </button>
                             <button
                                 type="button"
-                                onClick={() => fillDemo('ADMIN_user', 'ADMIN123')}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
-                            >
-                                ADMIN
-                            </button>
-                            <button
-                                type="button"
                                 onClick={() => fillDemo('User_user', 'User123')}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+                                className="px-4 py-2 text-xs font-medium text-foreground bg-secondary hover:bg-secondary/80 border border-border rounded-md transition-colors"
                             >
                                 User
                             </button>

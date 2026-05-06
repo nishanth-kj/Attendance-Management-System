@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '@/lib/api';
+import { getPermissions } from './permissions';
 
 const AuthContext = createContext();
 
@@ -52,3 +53,8 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+export const usePermissions = () => {
+    const { user } = useAuth();
+    return getPermissions(user);
+};

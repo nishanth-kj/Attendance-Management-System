@@ -14,17 +14,17 @@ const Profile = () => {
     const idValue = user.username;
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-2xl font-light text-gray-900">My Profile</h1>
+        <div className="max-w-4xl mx-auto space-y-6 transition-all">
+            <h1 className="text-2xl font-display font-light text-foreground">My Profile</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* ID Card Column */}
                 <div className="md:col-span-1">
-                    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 relative">
+                    <div className="bg-card rounded-lg shadow-lg overflow-hidden border border-border relative">
                         {/* ID Card Header */}
-                        <div className="h-24 bg-gradient-to-r from-blue-600 to-blue-800 relative">
+                        <div className="h-24 bg-primary relative">
                             <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2">
-                                <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-200 flex items-center justify-center overflow-hidden">
+                                <div className="w-24 h-24 rounded-md border-4 border-card bg-secondary flex items-center justify-center overflow-hidden">
                                     {user.User_image ? (
                                         <img src={user.User_image} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
@@ -36,26 +36,28 @@ const Profile = () => {
 
                         {/* ID Card Body */}
                         <div className="pt-12 pb-6 px-4 text-center">
-                            <h2 className="text-xl font-bold text-gray-800">{user.username}</h2>
-                            <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-4">{roleLabel}</p>
+                            <h2 className="text-xl font-bold text-foreground font-display">{user.username}</h2>
+                            <p className="text-sm font-black text-primary uppercase tracking-widest mb-4">{roleLabel}</p>
 
-                            <div className="grid grid-cols-1 gap-2 text-left text-xs bg-gray-50 p-3 rounded mb-4">
+                            <div className="grid grid-cols-1 gap-2 text-left text-xs bg-secondary/50 p-3 rounded-md mb-4 border border-border">
                                 <div>
-                                    <p className="text-gray-400 font-bold uppercase">{idLabel}</p>
-                                    <p className="font-semibold text-gray-700">{idValue}</p>
+                                    <p className="text-muted-foreground font-black uppercase tracking-tighter opacity-50">{idLabel}</p>
+                                    <p className="font-bold text-foreground">{idValue}</p>
                                 </div>
                             </div>
 
                             <div className="flex justify-center">
-                                <QrCode size={64} className="text-gray-800" />
+                                <div className="p-2 bg-white rounded-md">
+                                    <QrCode size={64} className="text-black" />
+                                </div>
                             </div>
-                            <p className="text-[10px] text-gray-400 mt-2 font-mono">{idValue}</p>
+                            <p className="text-[10px] text-muted-foreground mt-3 font-mono">{idValue}</p>
                         </div>
 
                         {/* ID Card Footer */}
-                        <div className="bg-gray-50 px-4 py-2 border-t border-gray-100 text-center">
-                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
-                                Official Digital ID
+                        <div className="bg-secondary/50 px-4 py-3 border-t border-border text-center">
+                            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em]">
+                                Digital Identity
                             </p>
                         </div>
                     </div>
@@ -63,69 +65,69 @@ const Profile = () => {
 
                 {/* Details Column */}
                 <div className="md:col-span-2">
-                    <div className="bg-white rounded shadow-sm border border-gray-200 min-h-[400px]">
-                        <div className="border-b border-gray-200 px-6 py-4 flex items-center gap-6">
+                    <div className="bg-card rounded-lg shadow-sm border border-border min-h-[400px]">
+                        <div className="border-b border-border px-6 py-0 flex items-center gap-8">
                             <button
                                 onClick={() => setActiveTab('details')}
-                                className={`text-sm font-medium pb-4 -mb-4 border-b-2 transition-colors ${activeTab === 'details' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                                className={`text-sm font-bold pt-5 pb-4 border-b-2 transition-all ${activeTab === 'details' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
                                     }`}
                             >
-                                Personal Details
+                                PERSONAL DETAILS
                             </button>
                             <button
                                 onClick={() => setActiveTab('settings')}
-                                className={`text-sm font-medium pb-4 -mb-4 border-b-2 transition-colors ${activeTab === 'settings' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                                className={`text-sm font-bold pt-5 pb-4 border-b-2 transition-all ${activeTab === 'settings' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
                                     }`}
                             >
-                                Account Settings
+                                ACCOUNT SETTINGS
                             </button>
                         </div>
 
                         <div className="p-6">
-                            {activeTab === 'details' && (
-                                <div className="space-y-6">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                             {activeTab === 'details' && (
+                                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Full Name</label>
-                                            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                                                <User size={16} className="text-gray-400" />
+                                            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
+                                            <div className="flex items-center gap-3 px-4 py-3 bg-secondary/50 rounded-md border border-border text-sm text-foreground font-bold">
+                                                <User size={16} className="text-primary" />
                                                 {user.username}
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address</label>
-                                            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                                                <Mail size={16} className="text-gray-400" />
+                                            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5 ml-1">Email Address</label>
+                                            <div className="flex items-center gap-3 px-4 py-3 bg-secondary/50 rounded-md border border-border text-sm text-foreground font-bold">
+                                                <Mail size={16} className="text-primary" />
                                                 {user.email || 'No email registered'}
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Role & Permissions</label>
-                                            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                                                <Shield size={16} className="text-gray-400" />
+                                            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5 ml-1">Role & Permissions</label>
+                                            <div className="flex items-center gap-3 px-4 py-3 bg-secondary/50 rounded-md border border-border text-sm text-foreground font-bold">
+                                                <Shield size={16} className="text-primary" />
                                                 {roleLabel}
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{idLabel}</label>
-                                            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                                                <CreditCard size={16} className="text-gray-400" />
+                                            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5 ml-1">{idLabel}</label>
+                                            <div className="flex items-center gap-3 px-4 py-3 bg-secondary/50 rounded-md border border-border text-sm text-foreground font-bold">
+                                                <CreditCard size={16} className="text-primary" />
                                                 {idValue}
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Contact</label>
-                                            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                                                <Phone size={16} className="text-gray-400" />
+                                            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1.5 ml-1">Contact</label>
+                                            <div className="flex items-center gap-3 px-4 py-3 bg-secondary/50 rounded-md border border-border text-sm text-foreground font-bold">
+                                                <Phone size={16} className="text-primary" />
                                                 +91 98765 43210
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="pt-4 border-t border-gray-100">
-                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Address</label>
-                                        <div className="flex items-start gap-2 p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                                            <MapPin size={16} className="text-gray-400 mt-0.5" />
+                                    <div className="pt-6 border-t border-border">
+                                        <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 ml-1">Official Address</label>
+                                        <div className="flex items-start gap-3 px-4 py-4 bg-secondary/50 rounded-md border border-border text-sm text-foreground font-medium leading-relaxed">
+                                            <MapPin size={18} className="text-primary mt-0.5 shrink-0" />
                                             <span>
                                                 #123, User Campus Block A,<br />
                                                 Campus Grounds,<br />

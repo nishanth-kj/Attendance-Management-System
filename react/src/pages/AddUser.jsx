@@ -38,17 +38,17 @@ const AddUser = () => {
     return (
         <div className="space-y-6">
             <div className="mb-4">
-                <Link to="/users" className="text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                <Link to="/users" className="text-sm font-bold text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
                     <ArrowLeft size={16} /> BACK TO REGISTRY
                 </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 {/* Biometric Capture */}
-                <div className="md:col-span-4 bg-white p-6 rounded shadow-sm border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4 text-center">Biometrics</h3>
+                <div className="md:col-span-4 bg-card p-6 rounded-lg shadow-sm border border-border">
+                    <h3 className="text-lg font-bold text-foreground mb-4 text-center">Biometrics</h3>
 
-                    <div className="relative w-full aspect-square bg-gray-100 rounded border-2 border-dashed border-gray-300 overflow-hidden mb-4">
+                    <div className="relative w-full aspect-square bg-secondary/50 rounded-md border-2 border-dashed border-border overflow-hidden mb-4 group transition-all">
                         {isCapturing ? (
                             <Webcam
                                 audio={false}
@@ -59,16 +59,16 @@ const AddUser = () => {
                         ) : image ? (
                             <div className="relative w-full h-full">
                                 <img src={image} className="w-full h-full object-cover" alt="User" />
-                                <div className="absolute inset-0 bg-green-500 bg-opacity-10 flex items-center justify-center">
-                                    <div className="bg-white rounded-full p-2">
-                                        <CheckCircle size={32} className="text-green-500" />
+                                <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
+                                    <div className="bg-card rounded-md p-2 shadow-xl border border-border">
+                                        <CheckCircle size={32} className="text-primary" />
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground group-hover:scale-110 transition-transform">
                                 <Camera size={48} className="mb-2 opacity-50" />
-                                <span className="font-semibold text-sm">CAMERA READY</span>
+                                <span className="font-bold text-xs uppercase tracking-widest">Camera Ready</span>
                             </div>
                         )}
                     </div>
@@ -77,7 +77,7 @@ const AddUser = () => {
                         <button
                             type="button"
                             onClick={capture}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium transition-colors"
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-md font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20"
                         >
                             <Camera size={18} /> Take Snapshot
                         </button>
@@ -85,7 +85,7 @@ const AddUser = () => {
                         <button
                             type="button"
                             onClick={() => setIsCapturing(true)}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 font-medium transition-colors"
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-primary text-primary rounded-md hover:bg-primary/5 font-bold transition-all"
                         >
                             {image ? <RefreshCw size={18} /> : <Camera size={18} />}
                             {image ? 'Retake Photo' : 'Start Camera'}
@@ -94,11 +94,11 @@ const AddUser = () => {
                 </div>
 
                 {/* User Details */}
-                <div className="md:col-span-8 bg-white p-6 rounded shadow-sm border border-gray-200">
-                    <h2 className="text-xl font-medium text-gray-900 mb-6">Register User</h2>
+                <div className="md:col-span-8 bg-card p-6 rounded-lg shadow-sm border border-border">
+                    <h2 className="text-xl font-bold text-foreground mb-6">Register User</h2>
 
                     {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 text-sm flex items-center gap-2">
+                        <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-md mb-6 text-sm flex items-center gap-2">
                             <AlertTriangle size={18} /> {error}
                         </div>
                     )}
@@ -106,21 +106,23 @@ const AddUser = () => {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div className="sm:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Full Name</label>
                                 <input
                                     type="text"
                                     required
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+                                    placeholder="Enter full name"
+                                    className="w-full px-4 py-2.5 bg-secondary/50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                 />
                             </div>
                             <div className="sm:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Password</label>
                                 <input
                                     type="password"
                                     required
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+                                    placeholder="••••••••"
+                                    className="w-full px-4 py-2.5 bg-secondary/50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 />
@@ -131,7 +133,7 @@ const AddUser = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="px-6 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium transition-colors disabled:opacity-50"
+                                className="px-8 py-3 bg-primary text-primary-foreground rounded-md text-sm font-bold hover:opacity-90 transition-all disabled:opacity-70 shadow-lg shadow-primary/20"
                             >
                                 {isSubmitting ? 'Enrolling User...' : 'Enroll User'}
                             </button>

@@ -35,21 +35,22 @@ const Attendance = () => {
     }, [webcamRef]);
 
     return (
-        <div className="min-h-[calc(100vh-64px)] bg-gray-50 py-8">
+        <div className="min-h-[calc(100vh-64px)] bg-background py-12 transition-all">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Link
                     to="/"
-                    className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500 mb-6 gap-1"
+                    className="inline-flex items-center text-sm font-bold text-muted-foreground hover:text-foreground mb-6 gap-1 transition-colors"
                 >
-                    <ArrowLeft size={16} /> Back to Home
+                    <ArrowLeft size={16} /> BACK TO HOME
                 </Link>
 
-                <div className="bg-white p-6 md:p-8 rounded shadow-sm border border-gray-200 text-center">
-                    <h1 className="text-3xl font-light text-gray-900 mb-6">
+                <div className="bg-card p-6 md:p-10 rounded-lg shadow-sm border border-border text-center">
+                    <h1 className="text-4xl font-display font-light text-foreground mb-6">
                         Mark Attendance
                     </h1>
 
-                    <div className="my-8 w-full max-w-2xl mx-auto overflow-hidden rounded bg-black">
+                    <div className="my-8 w-full max-w-2xl mx-auto overflow-hidden rounded-md bg-black border-4 border-secondary shadow-2xl relative">
+                        <div className="absolute inset-0 border-[1px] border-primary/20 pointer-events-none z-10"></div>
                         <Webcam
                             audio={false}
                             ref={webcamRef}
@@ -60,9 +61,9 @@ const Attendance = () => {
                     </div>
 
                     {result && (
-                        <div className={`mb-6 p-4 rounded border flex items-center justify-center gap-2 ${result === API_STATUS.SUCCESS
-                            ? 'bg-green-50 border-green-200 text-green-700'
-                            : 'bg-red-50 border-red-200 text-red-700'
+                        <div className={`mb-6 p-4 rounded-md border flex items-center justify-center gap-2 font-bold ${result === API_STATUS.SUCCESS
+                            ? 'bg-primary/10 border-primary/20 text-primary'
+                            : 'bg-destructive/10 border-destructive/20 text-destructive'
                             }`}>
                             {result === API_STATUS.SUCCESS ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
                             <span>
@@ -76,9 +77,9 @@ const Attendance = () => {
                     <button
                         onClick={capture}
                         disabled={isCapturing}
-                        className="min-w-[200px] flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors mx-auto"
+                        className="min-w-[220px] flex items-center justify-center gap-2 px-8 py-4 bg-primary text-primary-foreground text-xl font-bold rounded-md hover:opacity-90 transition-all disabled:opacity-70 shadow-xl shadow-primary/20 mx-auto"
                     >
-                        {isCapturing ? 'Processing...' : <><Camera size={20} /> Scan Face</>}
+                        {isCapturing ? 'Processing...' : <><Camera size={24} /> Scan Face</>}
                     </button>
                 </div>
             </div>

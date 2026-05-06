@@ -9,6 +9,7 @@ import {
     LogOut,
     ChevronLeft,
     ChevronRight,
+    ScanFace
 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -23,8 +24,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const navLinks = [
         { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['AUTHENTICATED'] },
         { path: '/attendance', label: 'Attendance', icon: Camera, roles: ['ANY'] },
-        { path: '/users', label: 'Users', icon: Users, roles: ['ADMIN', 'ADMIN'] },
-        { path: '/reports', label: 'Reports', icon: FileText, roles: ['ADMIN', 'ADMIN'] },
+        { path: '/users', label: 'Users', icon: Users, roles: [1, 2] },
+        { path: '/reports', label: 'Reports', icon: FileText, roles: [1, 2] },
         { path: '/profile', label: 'My Profile', icon: User, roles: ['AUTHENTICATED'] },
     ];
 
@@ -40,24 +41,28 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             {/* Desktop Sidebar (Static / Collapsible) */}
             <aside className={`
                 hidden md:flex h-screen
-                bg-white border-r border-gray-200
+                bg-card border-r border-border
                 transition-all duration-300 ease-in-out
                 ${isOpen ? 'w-64' : 'w-20'}
                 flex-col relative z-30
             `}>
-                <div className={`h-16 flex items-center ${isOpen ? 'justify-start px-6' : 'justify-center'} border-b border-gray-200 relative`}>
+                <div className={`h-16 flex items-center ${isOpen ? 'justify-start px-6' : 'justify-center'} border-b border-border relative`}>
                     {isOpen ? (
                         <div className="flex items-center gap-3">
-                            <img src="/favicon.png" alt="Logo" className="h-8 w-8" />
-                            <span className="font-bold text-lg text-gray-900 truncate">Attendance System</span>
+                            <div className="p-1 bg-primary/10 rounded-md text-primary">
+                                <ScanFace size={20} />
+                            </div>
+                            <span className="font-bold text-lg text-foreground truncate font-display">Attendance System</span>
                         </div>
                     ) : (
-                        <img src="/favicon.png" alt="Logo" className="h-8 w-8" />
+                        <div className="p-1.5 bg-primary/10 rounded-md text-primary">
+                            <ScanFace size={20} />
+                        </div>
                     )}
 
                     <button
                         onClick={toggleSidebar}
-                        className="absolute -bottom-3 -right-3 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:text-blue-600 hover:border-blue-300 shadow-sm z-50 transition-colors flex items-center justify-center cursor-pointer"
+                        className="absolute -bottom-3 -right-3 bg-card border border-border rounded-md p-1 text-muted-foreground hover:text-primary hover:border-primary shadow-sm z-50 transition-all flex items-center justify-center cursor-pointer"
                         style={{ width: '24px', height: '24px' }}
                     >
                         {isOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
@@ -70,10 +75,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                             key={link.path}
                             to={link.path}
                             className={({ isActive }) => `
-                                flex items-center px-4 py-3 mx-2 rounded-lg text-sm font-medium transition-colors
+                                flex items-center px-4 py-3 mx-2 rounded-lg text-sm font-medium transition-all
                                 ${isActive
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}
+                                    ? 'bg-primary/10 text-primary'
+                                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}
                                 ${!isOpen && 'justify-center px-2'}
                             `}
                             title={!isOpen ? link.label : ''}
@@ -84,11 +89,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     ))}
                 </div>
 
-                <div className="border-t border-gray-200 p-4 bg-white">
+                <div className="border-t border-border p-4 bg-card">
                     {user ? (
                         <button
                             onClick={handleLogout}
-                            className={`w-full flex items-center ${isOpen ? 'justify-start px-4' : 'justify-center'} py-2 text-red-600 rounded hover:bg-red-50 transition-colors`}
+                            className={`w-full flex items-center ${isOpen ? 'justify-start px-4' : 'justify-center'} py-2 text-destructive rounded hover:bg-destructive/10 transition-colors`}
                             title="Logout"
                         >
                             <LogOut size={20} className="shrink-0" />
@@ -97,7 +102,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     ) : (
                         <NavLink
                             to="/login"
-                            className={`block w-full text-center py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium`}
+                            className={`block w-full text-center py-2 bg-primary text-primary-foreground rounded hover:opacity-90 text-sm font-medium`}
                         >
                             {isOpen ? 'Login' : 'Log'}
                         </NavLink>
@@ -125,7 +130,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                             {/* Toggle Button for Mobile Drawer */}
                             <button
                                 onClick={toggleSidebar}
-                                className="absolute -bottom-3 -right-3 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:text-blue-600 hover:border-blue-300 shadow-sm z-50 transition-colors flex items-center justify-center cursor-pointer"
+                                className="absolute -bottom-3 -right-3 bg-white border border-gray-200 rounded-sm p-1 text-gray-500 hover:text-blue-600 hover:border-blue-300 shadow-sm z-50 transition-colors flex items-center justify-center cursor-pointer"
                                 style={{ width: '24px', height: '24px' }}
                             >
                                 <ChevronLeft size={14} />
@@ -140,10 +145,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                         to={link.path}
                                         onClick={toggleSidebar}
                                         className={({ isActive }) => `
-                                            flex items-center px-4 py-3 rounded-lg text-base font-medium transition-colors
+                                            flex items-center px-4 py-3 rounded-lg text-base font-medium transition-all
                                             ${isActive
-                                                ? 'bg-blue-50 text-blue-700'
-                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}
+                                                ? 'bg-primary/10 text-primary'
+                                                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}
                                         `}
                                     >
                                         <link.icon size={24} className="mr-4" />
@@ -152,12 +157,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                 ))}
                             </nav>
                         </div>
-
-                        <div className="border-t border-gray-200 p-4">
+ 
+                        <div className="border-t border-border p-4">
                             {user && (
                                 <button
                                     onClick={handleLogout}
-                                    className="flex items-center w-full px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg"
+                                    className="flex items-center w-full px-4 py-3 text-base font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                                 >
                                     <LogOut size={24} className="mr-4" />
                                     Logout
