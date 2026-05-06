@@ -1,7 +1,10 @@
 import base64
 import io
+
 import numpy as np
+
 from attendance.utils import get_face_encoding, compare_faces
+
 
 class BiometricService:
     @staticmethod

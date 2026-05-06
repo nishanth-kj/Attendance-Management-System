@@ -1,50 +1,61 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from accounts.services import UserService
-from .services import AttendanceService
-from .permissions import IsStaff, IsStaffOrReadOnly, IsAdmin
-from config.utils import ApiSuccessResponse, ApiErrorResponse
+from rest_framework.views import APIView
 
-class StudentListView(APIView):
-    permission_classes = [IsStaff]
+from accounts.services import UserService
+from config.utils import APIResponse
+from config.constants.api_status import APIStatus
+from .permissions import IsAdmin, IsSuperAdmin
+from .services import AttendanceService
+
+
+class UserListView(APIView):
+    permission_classes = [IsAdmin]
 
     def get(self, request):
-        result = UserService.get_student_list()
-        return ApiSuccessResponse(result.data)
+        role = request.query_params.get('role', 'USER')
+        result = UserService.get_user_list(role=role)
+        return APIResponse(APIStatus.SUCCESS, data=result.data)
 
     def post(self, request):
         result = UserService.create_user(
             username=request.data.get('username'),
             password=request.data.get('password'),
             email=request.data.get('email', ''),
-            role='STUDENT',
-            usn=request.data.get('usn'),
+            role=3,
             image_input=request.data.get('image_input')
         )
         if result.is_success:
-            return ApiSuccessResponse(result.data, result.message, status.HTTP_201_CREATED)
-        return ApiErrorResponse(result.error, result.message, status_code=result.status_code)
+            return APIResponse(APIStatus.SUCCESS, data=result.data, status_code=status.HTTP_201_CREATED)
+        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
 
-class StudentDetailView(APIView):
-    permission_classes = [IsStaff]
+class UserDetailView(APIView):
+    permission_classes = [IsAdmin]
 
-    def get(self, request, usn):
-        result = UserService.get_student_by_usn(usn)
+    def get(self, request, username):
+        result = UserService.get_user_by_username(username)
         if result.is_success:
-            return ApiSuccessResponse(result.data)
-        return ApiErrorResponse(result.error, status_code=result.status_code)
+            return APIResponse(APIStatus.SUCCESS, data=result.data)
+        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
 
-    def delete(self, request, usn):
+    def delete(self, request, username):
         try:
             from django.contrib.auth import get_user_model
             User = get_user_model()
-            student = User.objects.get(usn=usn, role='STUDENT')
-            student.delete()
-            return ApiSuccessResponse(None, "Student deleted", status_code=status.HTTP_204_NO_CONTENT)
+            user = User.objects.get(username=username)
+            
+            # Authorization check
+            if request.user.role == 1:
+                pass # Superadmin can delete anyone
+            elif request.user.role == 2 and user.role == 3:
+                pass # Admin can only delete regular users
+            else:
+                return APIResponse(APIStatus.ERROR, error="Unauthorized to delete this user", status_code=status.HTTP_403_FORBIDDEN)
+                
+            user.delete()
+            return APIResponse(APIStatus.SUCCESS, data=None, status_code=status.HTTP_204_NO_CONTENT)
         except Exception:
-            return ApiErrorResponse("Student not found", status_code=status.HTTP_404_NOT_FOUND)
+            return APIResponse(APIStatus.ERROR, error="User not found", status_code=status.HTTP_404_NOT_FOUND)
 
 class AttendanceMarkView(APIView):
     permission_classes = [AllowAny]
@@ -54,21 +65,21 @@ class AttendanceMarkView(APIView):
         result = AttendanceService.mark_attendance(image_data)
         
         if result.is_success:
-            return ApiSuccessResponse(result.data, result.message)
-        return ApiErrorResponse(result.error, status_code=result.status_code)
+            return APIResponse(APIStatus.SUCCESS, data=result.data)
+        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
 
 class AttendanceLogView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        if request.user.role == 'STUDENT':
-            result = AttendanceService.get_logs(usn=request.user.usn)
+        if request.user.role == 3:
+            result = AttendanceService.get_logs(username=request.user.username)
         else:
-            usn = request.query_params.get('usn')
-            result = AttendanceService.get_logs(usn)
+            username = request.query_params.get('username')
+            result = AttendanceService.get_logs(username)
         
         if not result.is_success:
-            return ApiErrorResponse(result.error, status_code=result.status_code)
+            return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
             
         logs = result.data
         
@@ -79,18 +90,18 @@ class AttendanceLogView(APIView):
             response['Content-Disposition'] = 'attachment; filename="attendance_report.csv"'
             
             writer = csv.writer(response)
-            writer.writerow(['Username', 'USN', 'Timestamp'])
+            writer.writerow(['Username', 'Timestamp'])
             for log in logs:
-                writer.writerow([log.get('username'), log.get('usn'), log.get('timestamp')])
+                writer.writerow([log.get('username'), log.get('timestamp')])
             return response
             
-        return ApiSuccessResponse(logs)
+        return APIResponse(APIStatus.SUCCESS, data=logs)
 
 class AttendanceAnalyticsView(APIView):
-    permission_classes = [IsStaff]
+    permission_classes = [IsAdmin]
 
     def get(self, request):
         result = AttendanceService.get_analytics()
         if result.is_success:
-            return ApiSuccessResponse(result.data)
-        return ApiErrorResponse(result.error)
+            return APIResponse(APIStatus.SUCCESS, data=result.data)
+        return APIResponse(APIStatus.ERROR, error=result.error)

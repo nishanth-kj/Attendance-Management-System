@@ -1,12 +1,12 @@
 import { Users, UserCheck, ClipboardList, TrendingUp } from 'lucide-react';
 
 const StatsGrid = ({ analytics, user, logsCount }) => {
-    const isStaff = user?.role === 'ADMIN' || user?.role === 'STAFF';
+    const isADMIN = [1, 2].includes(user?.role);
 
-    const stats = isStaff ? [
+    const stats = isADMIN ? [
         {
             label: "Total Users",
-            value: analytics?.summary?.total_students || 0,
+            value: analytics?.summary?.total_Users || 0,
             icon: Users,
             color: "text-blue-600",
             bg: "bg-blue-50/50",
@@ -30,7 +30,7 @@ const StatsGrid = ({ analytics, user, logsCount }) => {
         }
     ] : [];
 
-    if (!isStaff) return null; // User dashboard has its own stats grid
+    if (!isADMIN) return null; // User dashboard has its own stats grid
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

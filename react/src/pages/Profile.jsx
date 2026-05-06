@@ -8,9 +8,10 @@ const Profile = () => {
 
     if (!user) return <div className="p-8 text-center">Loading Profile...</div>;
 
-    // Determine ID Label and Value based on role
-    const idLabel = user.role === 'STUDENT' ? 'USN' : 'Employee ID';
-    const idValue = user.usn || user.username.toUpperCase(); // Fallback to username if no USN/ID
+    const roleLabels = { 1: 'Super Admin', 2: 'Admin', 3: 'User' };
+    const roleLabel = roleLabels[user.role] || 'User';
+    const idLabel = 'Username';
+    const idValue = user.username;
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
@@ -24,8 +25,8 @@ const Profile = () => {
                         <div className="h-24 bg-gradient-to-r from-blue-600 to-blue-800 relative">
                             <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2">
                                 <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-200 flex items-center justify-center overflow-hidden">
-                                    {user.student_image ? (
-                                        <img src={user.student_image} alt="Profile" className="w-full h-full object-cover" />
+                                    {user.User_image ? (
+                                        <img src={user.User_image} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
                                         <User size={48} className="text-gray-400" />
                                     )}
@@ -36,13 +37,9 @@ const Profile = () => {
                         {/* ID Card Body */}
                         <div className="pt-12 pb-6 px-4 text-center">
                             <h2 className="text-xl font-bold text-gray-800">{user.username}</h2>
-                            <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-4">{user.role}</p>
+                            <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-4">{roleLabel}</p>
 
-                            <div className="grid grid-cols-2 gap-2 text-left text-xs bg-gray-50 p-3 rounded mb-4">
-                                <div>
-                                    <p className="text-gray-400 font-bold uppercase">Department</p>
-                                    <p className="font-semibold text-gray-700">Computer Sc.</p>
-                                </div>
+                            <div className="grid grid-cols-1 gap-2 text-left text-xs bg-gray-50 p-3 rounded mb-4">
                                 <div>
                                     <p className="text-gray-400 font-bold uppercase">{idLabel}</p>
                                     <p className="font-semibold text-gray-700">{idValue}</p>
@@ -106,7 +103,7 @@ const Profile = () => {
                                             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Role & Permissions</label>
                                             <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
                                                 <Shield size={16} className="text-gray-400" />
-                                                {user.role}
+                                                {roleLabel}
                                             </div>
                                         </div>
                                         <div>
@@ -114,13 +111,6 @@ const Profile = () => {
                                             <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
                                                 <CreditCard size={16} className="text-gray-400" />
                                                 {idValue}
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Department</label>
-                                            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
-                                                <Building size={16} className="text-gray-400" />
-                                                Computer Science
                                             </div>
                                         </div>
                                         <div>
@@ -137,8 +127,8 @@ const Profile = () => {
                                         <div className="flex items-start gap-2 p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
                                             <MapPin size={16} className="text-gray-400 mt-0.5" />
                                             <span>
-                                                #123, User Hostels Block A,<br />
-                                                Engineering College Campus,<br />
+                                                #123, User Campus Block A,<br />
+                                                Campus Grounds,<br />
                                                 Bangalore - 560001
                                             </span>
                                         </div>

@@ -7,7 +7,7 @@ import api from '@/lib/api';
 const AddUser = () => {
     const navigate = useNavigate();
     const webcamRef = useRef(null);
-    const [formData, setFormData] = useState({ username: '', usn: '', email: '', password: '' });
+    const [formData, setFormData] = useState({ username: '', email: '', password: '' });
     const [image, setImage] = useState(null);
     const [isCapturing, setIsCapturing] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,7 +105,7 @@ const AddUser = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div>
+                            <div className="sm:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                                 <input
                                     type="text"
@@ -113,17 +113,6 @@ const AddUser = () => {
                                     className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">ID / USN</label>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="ID Number"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
-                                    value={formData.usn}
-                                    onChange={(e) => setFormData({ ...formData, usn: e.target.value })}
                                 />
                             </div>
                             <div className="sm:col-span-2">

@@ -9,7 +9,7 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
     const navigate = useNavigate();
 
     const filteredLogs = logs.filter(log =>
-        log.student_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.User_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.usn?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 

@@ -35,7 +35,7 @@ const AttendanceReport = () => {
         if (searchTerm) {
             const lowerTerm = searchTerm.toLowerCase();
             result = result.filter(log =>
-                log.student_name?.toLowerCase().includes(lowerTerm) ||
+                log.User_name?.toLowerCase().includes(lowerTerm) ||
                 log.usn?.toLowerCase().includes(lowerTerm)
             );
         }
@@ -127,7 +127,7 @@ const AttendanceReport = () => {
                             {currentItems.length > 0 ? currentItems.map((log) => (
                                 <tr key={log.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4 font-medium text-gray-900">
-                                        {log.student_name}
+                                        {log.User_name}
                                     </td>
                                     <td className="px-6 py-4 text-gray-600 font-mono text-xs">
                                         {log.usn || 'N/A'}

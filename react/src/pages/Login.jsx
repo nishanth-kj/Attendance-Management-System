@@ -15,10 +15,10 @@ const Login = () => {
         setLoading(true);
         try {
             const user = await login(formData.username, formData.password);
-            if (user?.role === 'ADMIN') {
+            if (user?.role === 1 || user?.role === 2) {
                 navigate('/admin-dashboard');
-            } else if (user?.role === 'STUDENT') {
-                navigate('/student-dashboard');
+            } else if (user?.role === 3) {
+                navigate('/user-dashboard');
             } else {
                 navigate('/dashboard');
             }
@@ -107,14 +107,14 @@ const Login = () => {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => fillDemo('staff_user', 'staff123')}
+                                onClick={() => fillDemo('ADMIN_user', 'ADMIN123')}
                                 className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
                             >
-                                Staff
+                                ADMIN
                             </button>
                             <button
                                 type="button"
-                                onClick={() => fillDemo('student_user', 'student123')}
+                                onClick={() => fillDemo('User_user', 'User123')}
                                 className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
                             >
                                 User

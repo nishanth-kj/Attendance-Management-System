@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -49,7 +50,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'attendance',
     'accounts',
-    'academic_structure',
 ]
 
 MIDDLEWARE = [
@@ -149,8 +149,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Student Attendance Management System API',
-    'DESCRIPTION': 'API for Student Attendance Management with Face Recognition',
+    'TITLE': 'Attendance Management System API',
+    'DESCRIPTION': 'API for Attendance Management with Face Recognition',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }

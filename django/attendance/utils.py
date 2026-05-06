@@ -1,9 +1,9 @@
+import base64
+
+import cv2
 import face_recognition
 import numpy as np
-import cv2
-import base64
-from PIL import Image
-import io
+
 
 def get_face_encoding(image_file):
     """

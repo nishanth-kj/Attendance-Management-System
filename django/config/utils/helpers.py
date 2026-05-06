@@ -1,6 +1,9 @@
-import base64
 import uuid
 from django.utils import timezone
+import uuid
+
+from django.utils import timezone
+
 
 class SystemUtils:
     @staticmethod

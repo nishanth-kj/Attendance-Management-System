@@ -16,11 +16,11 @@ const Home = () => {
                             Attendance Management System
                         </h1>
                         <p className="text-xl text-gray-600 font-light mb-8 max-w-3xl leading-relaxed">
-                            A simple, reliable, and secure platform for managing university attendance through facial recognition.
+                            A simple, reliable, and secure platform for managing attendance through facial recognition.
                         </p>
                         <hr className="my-8 border-t border-gray-200" />
                         <p className="text-gray-600 mb-8">
-                            Get started by marking your attendance or logging into the staff portal management area.
+                            Get started by marking your attendance or logging into the portal management area.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Link
@@ -33,7 +33,7 @@ const Home = () => {
                                 to="/login"
                                 className="inline-flex justify-center items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm"
                             >
-                                Staff Login
+                                Portal Login
                             </Link>
                         </div>
                     </div>
@@ -43,7 +43,7 @@ const Home = () => {
                         <div className="text-center mb-12">
                             <h2 className="text-3xl font-light text-gray-900 mb-4">Powerful Features</h2>
                             <p className="text-gray-600 max-w-2xl mx-auto">
-                                Discover what makes our system the best choice for your institution.
+                                Discover what makes our system the best choice for your management needs.
                             </p>
                         </div>
 
@@ -66,17 +66,17 @@ const Home = () => {
                             <FeatureCard
                                 icon={Smartphone}
                                 title="Mobile Friendly"
-                                desc="Responsive design allows staff and users to access the portal from any device, anywhere."
+                                desc="Responsive design allows admins and users to access the portal from any device, anywhere."
                             />
                             <FeatureCard
                                 icon={Cloud}
                                 title="Cloud Sync"
-                                desc="Real-time synchronization ensures that attendance marked in the classroom is instantly available to admins."
+                                desc="Real-time synchronization ensures that attendance marked is instantly available to admins."
                             />
                             <FeatureCard
                                 icon={Lock}
                                 title="Role-Based Access"
-                                desc="Strict access controls for Admins, Staff, and Users to ensure data integrity and security."
+                                desc="Strict access controls for Admins and Users to ensure data integrity and security."
                             />
                         </div>
                     </div>
@@ -89,7 +89,7 @@ const Home = () => {
 
                                 <div className="prose prose-blue max-w-none text-gray-600">
                                     <p className="mb-4">
-                                        The <strong>User Attendance System</strong> is a cutting-edge solution designed to modernize the traditional attendance tracking process in educational institutions.
+                                        The <strong>Attendance Management System</strong> is a cutting-edge solution designed to modernize the traditional attendance tracking process.
                                     </p>
                                     <p className="mb-4">
                                         Developed by <strong>Neuro Kode's</strong>, this system leverages advanced computer vision and machine learning technologies to identify users via facial recognition, eliminating the need for manual roll calls or paper-based signatures.
@@ -99,7 +99,7 @@ const Home = () => {
                                         <div>
                                             <h3 className="text-xl font-semibold text-gray-900 mb-4">Our Mission</h3>
                                             <p>
-                                                To provide a seamless, efficient, and transparent attendance monitoring experience that saves time for faculty and provides real-time insights for administrators.
+                                                To provide a seamless, efficient, and transparent attendance monitoring experience that saves time and provides real-time insights for administrators.
                                             </p>
                                         </div>
                                         <div>

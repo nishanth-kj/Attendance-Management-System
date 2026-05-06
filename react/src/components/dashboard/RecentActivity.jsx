@@ -20,11 +20,11 @@ const RecentActivity = ({ logs, searchTerm, setSearchTerm }) => {
                                 <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded bg-gray-800 flex items-center justify-center text-white font-bold text-sm">
-                                            {log.student_name?.charAt(0)}
+                                            {log.User_name?.charAt(0)}
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-sm font-semibold text-gray-900">{log.student_name}</span>
+                                                <span className="text-sm font-semibold text-gray-900">{log.User_name}</span>
                                                 <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800 uppercase">
                                                     Verified
                                                 </span>

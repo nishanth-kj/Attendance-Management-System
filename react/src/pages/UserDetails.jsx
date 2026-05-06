@@ -4,14 +4,14 @@ import { User } from 'lucide-react';
 import api from '@/lib/api';
 
 const UserDetails = () => {
-    const { usn } = useParams();
+    const { username } = useParams();
     const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const data = await api.get(`/attendance/users/${usn}/`);
+                const data = await api.get(`/attendance/users/${username}/`);
                 setUserData(data);
             } catch (err) {
                 console.error("Failed to fetch user details", err);
@@ -20,7 +20,7 @@ const UserDetails = () => {
             }
         };
         fetchDetails();
-    }, [usn]);
+    }, [username]);
 
     if (isLoading) return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -44,15 +44,15 @@ const UserDetails = () => {
                     {/* Profile Card */}
                     <div className="lg:col-span-4 bg-white p-6 rounded shadow-sm border border-gray-200">
                         <div className="w-40 h-40 mx-auto rounded overflow-hidden border-4 border-white shadow-sm mb-6 bg-gray-100 flex items-center justify-center">
-                            {userData.student_image ? (
-                                <img src={userData.student_image} alt={userData.username} className="w-full h-full object-cover" />
+                            {userData.image_url ? (
+                                <img src={userData.image_url} alt={userData.username} className="w-full h-full object-cover" />
                             ) : (
                                 <User size={80} className="text-gray-300" />
                             )}
                         </div>
                         <div className="text-center mb-6">
                             <h2 className="text-2xl font-bold text-gray-900">{userData.username}</h2>
-                            <p className="text-sm font-semibold text-blue-600 tracking-wide uppercase">{userData.usn}</p>
+                            <p className="text-sm font-semibold text-blue-600 tracking-wide uppercase">{userData.role}</p>
                         </div>
 
                         <div className="space-y-4 pt-6 border-t border-gray-100">
@@ -70,8 +70,8 @@ const UserDetails = () => {
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" /></svg>
                                 </span>
                                 <div>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">ID / USN</p>
-                                    <p className="font-semibold text-gray-900 text-sm">{userData.usn}</p>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Role</p>
+                                    <p className="font-semibold text-gray-900 text-sm">{userData.role}</p>
                                 </div>
                             </div>
                         </div>

@@ -4,7 +4,7 @@ import api from '@/lib/api';
 
 // Dashboards
 import AdminDashboard from './dashboards/AdminDashboard';
-import StaffDashboard from './dashboards/StaffDashboard';
+import ADMINDashboard from './dashboards/ADMINDashboard';
 import UserDashboard from './dashboards/UserDashboard';
 
 const Dashboard = () => {
@@ -18,11 +18,11 @@ const Dashboard = () => {
         const fetchData = async () => {
             if (!user) return;
             try {
-                const isStaff = user.role === 'ADMIN' || user.role === 'STAFF';
+                const isADMIN = [1, 2].includes(user.role);
                 const logsData = await api.get('/attendance/logs/');
                 setLogs(logsData || []);
 
-                if (isStaff) {
+                if (isADMIN) {
                     const analyticsData = await api.get('/attendance/analytics/');
                     setAnalytics(analyticsData);
                 }
@@ -45,7 +45,7 @@ const Dashboard = () => {
         </div>
     );
 
-    if (user?.role === 'ADMIN') {
+    if (user?.role === 1 || user?.role === 2) {
         return (
             <AdminDashboard
                 user={user}
@@ -58,20 +58,7 @@ const Dashboard = () => {
         );
     }
 
-    if (user?.role === 'STAFF') {
-        return (
-            <StaffDashboard
-                user={user}
-                analytics={analytics}
-                logs={logs}
-                handleExport={handleExport}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-            />
-        );
-    }
-
-    if (user?.role === 'STUDENT') {
+    if (user?.role === 3) {
         return (
             <UserDashboard
                 user={user}

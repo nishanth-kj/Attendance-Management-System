@@ -1,10 +1,12 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from attendance.permissions import IsAdmin, IsStaff
+from rest_framework.views import APIView
+
+from attendance.permissions import IsAdmin
+from config.utils import APIResponse
+from config.constants.api_status import APIStatus
 from .services import UserService, AuthService
-from config.utils import ApiSuccessResponse, ApiErrorResponse
+
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -14,12 +16,11 @@ class RegisterView(APIView):
             username=request.data.get('username'),
             password=request.data.get('password'),
             email=request.data.get('email', ''),
-            role=request.data.get('role', 'STAFF'),
-            usn=request.data.get('usn')
+            role=request.data.get('role', 3),
         )
         if result.is_success:
-            return ApiSuccessResponse(result.data, result.message, status.HTTP_201_CREATED)
-        return ApiErrorResponse(result.error, result.message, status_code=result.status_code)
+            return APIResponse(APIStatus.SUCCESS, data=result.data, status_code=status.HTTP_201_CREATED)
+        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
 
 class DemoView(APIView):
     permission_classes = [AllowAny]
@@ -29,29 +30,22 @@ class DemoView(APIView):
             "roles": [
                 {
                     "title": "Administrator",
-                    "description": "Full access to manage staff, students, and system settings.",
+                    "description": "Full access to manage users and system settings.",
                     "username": "admin",
                     "password": "admin123",
-                    "capabilities": ["All system features", "Staff Management", "Student Management", "System Logs"]
+                    "capabilities": ["All system features", "User Management", "System Logs"]
                 },
                 {
-                    "title": "Faculty Member",
-                    "description": "Access to manage students and export attendance reports.",
-                    "username": "prof_jane",
-                    "password": "password123",
-                    "capabilities": ["Student Enrollment", "View Attendance", "CSV Export", "Class Analytics"]
-                },
-                {
-                    "title": "Student",
+                    "title": "Regular User",
                     "description": "Access to personal attendance records and check-in history.",
-                    "username": "student_1",
+                    "username": "user_1",
                     "password": "password123",
                     "capabilities": ["Personal Dashboard", "Attendance History", "Biometric Check-in Status"]
                 }
             ],
             "note": "Use these credentials to explore the system functionality."
         }
-        return ApiSuccessResponse(data)
+        return APIResponse(APIStatus.SUCCESS, data=data)
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -62,70 +56,33 @@ class LoginView(APIView):
         
         result = AuthService.login_user(username, password)
         if result.is_success:
-            return ApiSuccessResponse(result.data, result.message)
-        return ApiErrorResponse(result.error, status_code=result.status_code)
+            return APIResponse(APIStatus.SUCCESS, data=result.data)
+        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
 
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user_data = UserService.user_to_dict(request.user)
-        return ApiSuccessResponse(user_data)
-
-class StaffListCreateView(APIView):
-    permission_classes = [IsAdmin]
-
-    def get(self, request):
-        result = UserService.get_staff_list()
-        return ApiSuccessResponse(result.data)
-
-    def post(self, request):
-        result = UserService.create_user(
-            username=request.data.get('username'),
-            password=request.data.get('password'),
-            email=request.data.get('email', ''),
-            role='STAFF',
-            image_input=request.data.get('image_input')
-        )
-        if result.is_success:
-            return ApiSuccessResponse(result.data, result.message, status.HTTP_201_CREATED)
-        return ApiErrorResponse(result.error, status_code=result.status_code)
-
-class StudentListCreateView(APIView):
-    permission_classes = [IsStaff]
-
-    def get(self, request):
-        result = UserService.get_student_list()
-        return ApiSuccessResponse(result.data)
-
-    def post(self, request):
-        result = UserService.create_user(
-            username=request.data.get('username'),
-            password=request.data.get('password'),
-            email=request.data.get('email', ''),
-            role='STUDENT',
-            usn=request.data.get('usn'),
-            image_input=request.data.get('image_input')
-        )
-        if result.is_success:
-            return ApiSuccessResponse(result.data, result.message, status.HTTP_201_CREATED)
-        return ApiErrorResponse(result.error, status_code=result.status_code)
+        return APIResponse(APIStatus.SUCCESS, data=user_data)
 
 class UserDetailView(APIView):
-    permission_classes = [IsStaff]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
         result = UserService.get_user_detail(pk)
         if not result.is_success:
-            return ApiErrorResponse(result.error, status_code=result.status_code)
+            return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
         
         user_data = result.data
-        if request.user.role == 'ADMIN' or (request.user.role == 'STAFF' and user_data['role'] == 'STUDENT'):
-            return ApiSuccessResponse(user_data)
-        return ApiErrorResponse("Unauthorized", status_code=status.HTTP_403_FORBIDDEN)
+        if request.user.role in [1, 2] or request.user.id == user_data['id']:
+            return APIResponse(APIStatus.SUCCESS, data=user_data)
+        return APIResponse(APIStatus.ERROR, error="Unauthorized", status_code=status.HTTP_403_FORBIDDEN)
 
     def delete(self, request, pk):
+        if request.user.role not in [1, 2]:
+            return APIResponse(APIStatus.ERROR, error="Only admins can delete users", status_code=status.HTTP_403_FORBIDDEN)
         result = UserService.delete_user(pk)
         if result.is_success:
-             return ApiSuccessResponse(None, result.message, status_code=status.HTTP_204_NO_CONTENT)
-        return ApiErrorResponse(result.error, status_code=result.status_code)
+             return APIResponse(APIStatus.SUCCESS, data=None, status_code=status.HTTP_204_NO_CONTENT)
+        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)

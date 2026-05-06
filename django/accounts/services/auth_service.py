@@ -1,7 +1,9 @@
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .user_service import UserService
+
 from config.utils.services import BaseService
+from .user_service import UserService
+
 
 class AuthService(BaseService):
     @classmethod

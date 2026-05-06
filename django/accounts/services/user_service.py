@@ -1,8 +1,9 @@
 import base64
-import io
+
 from django.contrib.auth import get_user_model
-from config.utils.services import BaseService
+
 from attendance.services.biometric_service import BiometricService
+from config.utils.services import BaseService
 
 User = get_user_model()
 
@@ -24,19 +25,17 @@ class UserService(BaseService):
             'name': display_name,
             'email': user.email,
             'role': user.role,
-            'usn': user.usn,
             'image_url': image_data
         }
 
     @classmethod
-    def create_user(cls, username, password, email='', role=User.STAFF, usn=None, image_input=None):
+    def create_user(cls, username, password, email='', role=User.USER, image_input=None):
         try:
             user = User.objects.create_user(
                 username=username,
                 email=email,
                 password=password,
-                role=role,
-                usn=usn
+                role=role
             )
             
             if image_input:
@@ -66,14 +65,12 @@ class UserService(BaseService):
         return user
 
     @classmethod
-    def get_staff_list(cls):
-        staff = User.objects.filter(role=User.STAFF)
-        return cls.success([cls.user_to_dict(u) for u in staff])
-
-    @classmethod
-    def get_student_list(cls):
-        students = User.objects.filter(role=User.STUDENT)
-        return cls.success([cls.user_to_dict(u) for u in students])
+    def get_user_list(cls, role=None):
+        if role:
+            users = User.objects.filter(role=role)
+        else:
+            users = User.objects.all()
+        return cls.success([cls.user_to_dict(u) for u in users])
 
     @classmethod
     def get_user_detail(cls, pk):
@@ -84,12 +81,12 @@ class UserService(BaseService):
             return cls.failure("User not found", status_code=404)
 
     @classmethod
-    def get_student_by_usn(cls, usn):
+    def get_user_by_username(cls, username):
         try:
-            user = User.objects.get(usn=usn, role=User.STUDENT)
+            user = User.objects.get(username=username, role=User.USER)
             return cls.success(cls.user_to_dict(user))
         except User.DoesNotExist:
-            return cls.failure("Student not found", status_code=404)
+            return cls.failure("User not found", status_code=404)
 
     @classmethod
     def delete_user(cls, user_id):

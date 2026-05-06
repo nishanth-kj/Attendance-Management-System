@@ -16,7 +16,7 @@ const DashboardHeader = ({ user, onExport }) => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                {(user?.role === 'ADMIN' || user?.role === 'STAFF') && (
+                {([1, 2].includes(user?.role)) && (
                     <>
                         <button
                             onClick={onExport}

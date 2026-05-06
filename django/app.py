@@ -1,9 +1,10 @@
-from flask import Flask, render_template, jsonify, request
-import cv2
-import numpy as np
-import face_recognition
 import os
 from datetime import datetime
+
+import cv2
+import face_recognition
+import numpy as np
+from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 

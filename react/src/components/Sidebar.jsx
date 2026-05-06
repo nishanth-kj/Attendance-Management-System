@@ -23,8 +23,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const navLinks = [
         { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['AUTHENTICATED'] },
         { path: '/attendance', label: 'Attendance', icon: Camera, roles: ['ANY'] },
-        { path: '/users', label: 'Users', icon: Users, roles: ['ADMIN', 'STAFF'] },
-        { path: '/reports', label: 'Reports', icon: FileText, roles: ['ADMIN', 'STAFF'] },
+        { path: '/users', label: 'Users', icon: Users, roles: ['ADMIN', 'ADMIN'] },
+        { path: '/reports', label: 'Reports', icon: FileText, roles: ['ADMIN', 'ADMIN'] },
         { path: '/profile', label: 'My Profile', icon: User, roles: ['AUTHENTICATED'] },
     ];
 

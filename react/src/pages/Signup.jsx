@@ -8,7 +8,7 @@ const Signup = () => {
         username: '',
         email: '',
         password: '',
-        role: 'STAFF',
+        role: 2,
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -43,7 +43,8 @@ const Signup = () => {
                     <div>
                         <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Select Role</label>
                         <div className="flex rounded shadow-sm">
-                            {['ADMIN', 'STAFF'].map((role, idx) => {
+                            {[2, 3].map((role, idx) => {
+                                const labels = { 2: 'Admin', 3: 'User' };
                                 const isSelected = formData.role === role;
                                 return (
                                     <button
@@ -55,7 +56,7 @@ const Signup = () => {
                                                 : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
                                             } ${idx === 0 ? 'rounded-l' : 'rounded-r'} focus:outline-none`}
                                     >
-                                        {role}
+                                        {labels[role]}
                                     </button>
                                 );
                             })}

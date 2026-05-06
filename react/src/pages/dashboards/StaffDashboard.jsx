@@ -5,11 +5,11 @@ import AttendanceChart from '@/components/dashboard/AttendanceChart';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 
-const StaffDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSearchTerm }) => {
+const ADMINDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSearchTerm }) => {
     const navigate = useNavigate();
 
     const filteredLogs = logs.filter(log =>
-        log.student_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.User_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.usn?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -18,7 +18,7 @@ const StaffDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
             <DashboardHeader user={user} onExport={handleExport} />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Main Staff Functional Area */}
+                {/* Main ADMIN Functional Area */}
                 <div className="md:col-span-2 space-y-6">
                     <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row items-center gap-8 bg-gradient-to-br from-white to-blue-50/30">
                         <div className="w-full md:w-1/2 space-y-4 text-center md:text-left">
@@ -126,4 +126,4 @@ const StaffDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
     );
 };
 
-export default StaffDashboard;
+export default ADMINDashboard;

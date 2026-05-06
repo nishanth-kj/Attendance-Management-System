@@ -37,7 +37,7 @@ function App() {
           <Route
             path="/admin-dashboard"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={[1, 2]}>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -45,7 +45,7 @@ function App() {
           <Route
             path="/user-dashboard"
             element={
-              <ProtectedRoute allowedRoles={['STUDENT']}>
+              <ProtectedRoute allowedRoles={[3]}>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -67,11 +67,11 @@ function App() {
             }
           />
 
-          {/* Admin & Staff Only Routes */}
+          {/* Admin & ADMIN Only Routes */}
           <Route
             path="/users"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'STAFF']}>
+              <ProtectedRoute allowedRoles={[1, 2]}>
                 <ViewUsers />
               </ProtectedRoute>
             }
@@ -79,15 +79,15 @@ function App() {
           <Route
             path="/users/add"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'STAFF']}>
+              <ProtectedRoute allowedRoles={[1, 2]}>
                 <AddUser />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/users/:usn"
+            path="/users/:username"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'STAFF']}>
+              <ProtectedRoute allowedRoles={[1, 2]}>
                 <UserDetails />
               </ProtectedRoute>
             }
@@ -95,7 +95,7 @@ function App() {
           <Route
             path="/reports"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'STAFF']}>
+              <ProtectedRoute allowedRoles={[1, 2]}>
                 <AttendanceReport />
               </ProtectedRoute>
             }

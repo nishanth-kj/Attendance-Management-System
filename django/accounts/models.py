@@ -1,24 +1,18 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from config.constants.role import UserRole
 
 class User(AbstractUser):
-    ADMIN = 'ADMIN'
-    STAFF = 'STAFF'
-    STUDENT = 'STUDENT'
+    SUPERADMIN = UserRole.SUPERADMIN.code
+    ADMIN = UserRole.ADMIN.code
+    USER = UserRole.USER.code
     
-    ROLE_CHOICES = [
-        (ADMIN, 'Administrator'),
-        (STAFF, 'Staff Member'),
-        (STUDENT, 'Student'),
-    ]
+    ROLE_CHOICES = UserRole.choices()
     
-    role = models.CharField(
-        max_length=10,
+    role = models.IntegerField(
         choices=ROLE_CHOICES,
-        default=STAFF
+        default=USER
     )
-    
-    usn = models.CharField(max_length=100, unique=True, null=True, blank=True)
     
     # Biometric fields for Staff & Students
     image_blob = models.BinaryField(null=True, blank=True)
@@ -26,22 +20,16 @@ class User(AbstractUser):
     face_embedding = models.BinaryField(null=True, blank=True)
     
     # Academic Info
-    department = models.ForeignKey(
-        'academic_structure.Department', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True,
-        related_name='users'
-    )
+    # (Removed department and academic structure as per request)
     
-    def is_admin(self):
-        return self.role == self.ADMIN or self.is_superuser
+    def is_super_admin(self):
+        return self.role == self.SUPERADMIN or self.is_superuser
 
-    def is_staff_member(self):
-        return self.role == self.STAFF
-    
-    def is_student_member(self):
-        return self.role == self.STUDENT
+    def is_admin(self):
+        return self.role in [self.ADMIN, self.SUPERADMIN] or self.is_superuser
+
+    def is_regular_user(self):
+        return self.role == self.USER
 
     def __str__(self):
         return f"{self.username} ({self.role})"

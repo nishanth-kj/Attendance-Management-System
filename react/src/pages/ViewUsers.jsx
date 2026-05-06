@@ -22,19 +22,18 @@ const ViewUsers = () => {
         fetchUsers();
     }, []);
 
-    const handleDelete = async (usn) => {
+    const handleDelete = async (username) => {
         if (!window.confirm('Are you sure you want to remove this user?')) return;
         try {
-            await api.delete(`/attendance/users/${usn}/`);
-            setUsers(users.filter(u => u.usn !== usn));
+            await api.delete(`/attendance/users/${username}/`);
+            setUsers(users.filter(u => u.username !== username));
         } catch (err) {
             alert('Failed to delete user');
         }
     };
 
     const filteredUsers = (users || []).filter(u =>
-        u?.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u?.usn?.toLowerCase().includes(searchTerm.toLowerCase())
+        u?.username?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (isLoading) return (
@@ -78,12 +77,12 @@ const ViewUsers = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredUsers.length > 0 ? filteredUsers.map((u) => (
-                    <div key={u.usn} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                    <div key={u.username} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                         <div className="p-6">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-12 h-12 rounded bg-gray-100 flex items-center justify-center text-gray-500 font-bold overflow-hidden">
-                                    {u.student_image ? (
-                                        <img src={u.student_image} alt={u.username} className="w-full h-full object-cover" />
+                                    {u.image_url ? (
+                                        <img src={u.image_url} alt={u.username} className="w-full h-full object-cover" />
                                     ) : (
                                         <User size={24} />
                                     )}
@@ -93,20 +92,20 @@ const ViewUsers = () => {
                                         {u.username}
                                     </h3>
                                     <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
-                                        {u.usn}
+                                        {u.role}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
                                 <Link
-                                    to={`/users/${u.usn}`}
+                                    to={`/users/${u.username}`}
                                     className="flex-1 py-1.5 text-center text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded border border-gray-200 transition-colors"
                                 >
                                     Details
                                 </Link>
                                 <button
-                                    onClick={() => handleDelete(u.usn)}
+                                    onClick={() => handleDelete(u.username)}
                                     className="flex items-center justify-center gap-1 px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors"
                                 >
                                     <Trash2 size={14} /> Del

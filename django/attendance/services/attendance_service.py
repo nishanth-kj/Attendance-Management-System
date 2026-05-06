@@ -1,5 +1,5 @@
-import numpy as np
 from django.contrib.auth import get_user_model
+
 from attendance.models import Log
 from attendance.services.biometric_service import BiometricService
 from config.utils.services import BaseService
@@ -17,8 +17,8 @@ class AttendanceService(BaseService):
             'id': log.id,
             'user': log.user.id,
             'username': log.user.username,
-            'student_name': display_name,
-            'usn': log.user.usn,
+            'user_name': display_name,
+            'status': log.status,
             'timestamp': log.timestamp.isoformat()
         }
 
@@ -33,14 +33,13 @@ class AttendanceService(BaseService):
             return cls.failure("No face detected or invalid image")
 
         # 2. Identify User using BiometricService
-        users = User.objects.filter(role='STUDENT').exclude(face_embedding__isnull=True)
+        users = User.objects.filter(role=3).exclude(face_embedding__isnull=True)
         user = BiometricService.identify_user(encoding, users)
 
         if user:
-            Log.objects.create(user=user)
+            Log.objects.create(user=user, status=1) # 1 = PRESENT
             data = {
                 'username': user.username,
-                'usn': user.usn,
                 'role': user.role,
                 'name': f"{user.first_name} {user.last_name}".strip() or user.username,
             }
@@ -49,9 +48,9 @@ class AttendanceService(BaseService):
         return cls.failure("No match found", status_code=404)
 
     @classmethod
-    def get_logs(cls, usn=None):
-        if usn:
-            logs = Log.objects.filter(user__usn=usn).order_by('-timestamp')
+    def get_logs(cls, username=None):
+        if username:
+            logs = Log.objects.filter(user__username=username).order_by('-timestamp')
         else:
             logs = Log.objects.all().order_by('-timestamp')
         
@@ -64,7 +63,7 @@ class AttendanceService(BaseService):
         from django.utils import timezone
         
         today = timezone.now().date()
-        total_students = User.objects.filter(role='STUDENT').count()
+        total_users = User.objects.filter(role=3).count()
         today_attendance = Log.objects.filter(timestamp__date=today).values('user').distinct().count()
         
         # Monthly trend (last 30 days)
@@ -77,9 +76,9 @@ class AttendanceService(BaseService):
         
         data = {
             'summary': {
-                'total_students': total_students,
+                'total_users': total_users,
                 'today_present': today_attendance,
-                'attendance_rate': (today_attendance / total_students * 100) if total_students > 0 else 0
+                'attendance_rate': (today_attendance / total_users * 100) if total_users > 0 else 0
             },
             'trends': list(daily_stats)
         }
