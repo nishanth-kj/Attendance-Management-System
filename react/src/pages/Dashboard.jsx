@@ -3,9 +3,9 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import api from '@/lib/api';
 
 // Dashboards
-import SuperAdminDashboard from './dashboards/SuperAdminDashboard';
-import AdminDashboard from './dashboards/AdminDashboard';
-import UserDashboard from './dashboards/UserDashboard';
+import SuperAdminDashboard from '../components/dashboard/super-admin/SuperAdminDashboard';
+import AdminDashboard from '../components/dashboard/admin/AdminDashboard';
+import UserDashboard from '../components/dashboard/user/UserDashboard';
 
 const Dashboard = () => {
     const { user } = useAuth();
