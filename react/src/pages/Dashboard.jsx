@@ -3,8 +3,8 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import api from '@/lib/api';
 
 // Dashboards
+import SuperAdminDashboard from './dashboards/SuperAdminDashboard';
 import AdminDashboard from './dashboards/AdminDashboard';
-import ADMINDashboard from './dashboards/ADMINDashboard';
 import UserDashboard from './dashboards/UserDashboard';
 
 const Dashboard = () => {
@@ -45,7 +45,20 @@ const Dashboard = () => {
         </div>
     );
 
-    if (user?.role === 1 || user?.role === 2) {
+    if (user?.role === 1) {
+        return (
+            <SuperAdminDashboard
+                user={user}
+                analytics={analytics}
+                logs={logs}
+                handleExport={handleExport}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+            />
+        );
+    }
+
+    if (user?.role === 2) {
         return (
             <AdminDashboard
                 user={user}

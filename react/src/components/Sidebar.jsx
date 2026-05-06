@@ -9,7 +9,9 @@ import {
     LogOut,
     ChevronLeft,
     ChevronRight,
-    ScanFace
+    ScanFace,
+    UserPlus,
+    ShieldPlus
 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -25,6 +27,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['AUTHENTICATED'] },
         { path: '/attendance', label: 'Attendance', icon: Camera, roles: ['ANY'] },
         { path: '/users', label: 'Users', icon: Users, roles: [1, 2] },
+        { path: '/users/add', label: 'Add User', icon: UserPlus, roles: [2] },
+        { path: '/admins/add', label: 'Add Admin', icon: ShieldPlus, roles: [1] },
         { path: '/reports', label: 'Reports', icon: FileText, roles: [1, 2] },
         { path: '/profile', label: 'My Profile', icon: User, roles: ['AUTHENTICATED'] },
     ];
@@ -120,17 +124,19 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     <div className="fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity" onClick={toggleSidebar}></div>
 
                     {/* Drawer Content */}
-                    <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white transition-all transform duration-300">
+                    <div className="relative flex-1 flex flex-col max-w-xs w-full bg-card transition-all transform duration-300 shadow-2xl border-r border-border">
                         {/* Wrapper for content */}
 
-                        <div className="h-16 flex items-center px-4 border-b border-gray-200 gap-3 relative">
-                            <img src="/favicon.png" alt="Logo" className="h-8 w-8" />
-                            <span className="font-bold text-lg text-gray-900">User Attendance System</span>
+                        <div className="h-16 flex items-center px-4 border-b border-border gap-3 relative bg-card">
+                            <div className="p-1 bg-primary/10 rounded-md text-primary">
+                                <ScanFace size={24} />
+                            </div>
+                            <span className="font-bold text-lg text-foreground font-display">Attendance System</span>
 
                             {/* Toggle Button for Mobile Drawer */}
                             <button
                                 onClick={toggleSidebar}
-                                className="absolute -bottom-3 -right-3 bg-white border border-gray-200 rounded-sm p-1 text-gray-500 hover:text-blue-600 hover:border-blue-300 shadow-sm z-50 transition-colors flex items-center justify-center cursor-pointer"
+                                className="absolute -bottom-3 -right-3 bg-card border border-border rounded-md p-1 text-muted-foreground hover:text-primary shadow-sm z-50 transition-all flex items-center justify-center cursor-pointer"
                                 style={{ width: '24px', height: '24px' }}
                             >
                                 <ChevronLeft size={14} />

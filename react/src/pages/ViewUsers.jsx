@@ -4,15 +4,18 @@ import { UserPlus, Search, Trash2, User } from 'lucide-react';
 import api from '@/lib/api';
 
 const ViewUsers = () => {
+    const { user } = useAuth();
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [activeRole, setActiveRole] = useState('USER');
     const roleLabels = { 1: 'Super Admin', 2: 'Admin', 3: 'User' };
 
     useEffect(() => {
         const fetchUsers = async () => {
+            setIsLoading(true);
             try {
-                const data = await api.get('/attendance/users/');
+                const data = await api.get(`/attendance/users/?role=${activeRole}`);
                 setUsers(data || []);
             } catch (err) {
                 console.error("Failed to fetch users", err);
@@ -21,7 +24,7 @@ const ViewUsers = () => {
             }
         };
         fetchUsers();
-    }, []);
+    }, [activeRole]);
 
     const handleDelete = async (username) => {
         if (!window.confirm('Are you sure you want to remove this user?')) return;
@@ -47,19 +50,46 @@ const ViewUsers = () => {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 className="text-2xl font-display font-light text-foreground leading-tight">Users</h2>
-                    <p className="text-sm text-muted-foreground mt-1 font-medium">
-                        Total Registered: {users.length}
+                    <h2 className="text-3xl font-display font-black text-foreground leading-tight tracking-tight uppercase">Registry</h2>
+                    <p className="text-xs text-muted-foreground mt-1 font-bold uppercase tracking-widest opacity-70">
+                        {activeRole} Database • {users.length} Records
                     </p>
                 </div>
-                <Link
-                    to="/users/add"
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground hover:opacity-90 rounded-md text-sm font-medium transition-all shadow-lg shadow-primary/20"
-                >
-                    <UserPlus size={16} />
-                    Enrol User
-                </Link>
+                <div className="flex items-center gap-2">
+                    {user?.role === 1 && (
+                        <Link
+                            to="/admins/add"
+                            className="flex items-center gap-2 px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-md text-xs font-black uppercase tracking-widest transition-all border border-border"
+                        >
+                            <UserPlus size={14} /> Add Admin
+                        </Link>
+                    )}
+                    <Link
+                        to="/users/add"
+                        className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground hover:opacity-90 rounded-md text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-primary/20"
+                    >
+                        <UserPlus size={14} /> Enrol User
+                    </Link>
+                </div>
             </div>
+
+            {user?.role === 1 && (
+                <div className="flex gap-2 p-1 bg-secondary/50 rounded-lg w-fit border border-border">
+                    {['USER', 'ADMIN'].map((r) => (
+                        <button
+                            key={r}
+                            onClick={() => setActiveRole(r)}
+                            className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-md transition-all ${
+                                activeRole === r 
+                                ? 'bg-card text-primary shadow-sm border border-border' 
+                                : 'text-muted-foreground hover:text-foreground'
+                            }`}
+                        >
+                            {r}s
+                        </button>
+                    ))}
+                </div>
+            )}
 
             <div className="bg-card p-4 rounded-lg shadow-sm border border-border">
                 <div className="relative">
@@ -98,18 +128,18 @@ const ViewUsers = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2 pt-4 border-t border-border">
+                             <div className="flex items-center gap-2 pt-4 border-t border-border">
                                 <Link
                                     to={`/users/${u.username}`}
-                                    className="flex-1 py-1.5 text-center text-sm font-medium text-foreground bg-secondary hover:bg-secondary/80 rounded-lg border border-border transition-colors"
+                                    className="flex-1 py-1.5 text-center text-xs font-black uppercase tracking-widest text-foreground bg-secondary hover:bg-secondary/80 rounded-md border border-border transition-colors"
                                 >
                                     Details
                                 </Link>
                                 <button
                                     onClick={() => handleDelete(u.username)}
-                                    className="flex items-center justify-center gap-1 px-3 py-1.5 text-sm font-medium text-destructive bg-destructive/10 hover:bg-destructive/20 rounded-lg border border-destructive/20 transition-colors"
+                                    className="flex items-center justify-center gap-1 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-destructive bg-destructive/10 hover:bg-destructive/20 rounded-md border border-destructive/20 transition-all"
                                 >
-                                    <Trash2 size={14} /> Del
+                                    Remove
                                 </button>
                             </div>
                         </div>

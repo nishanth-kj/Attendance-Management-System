@@ -13,16 +13,30 @@ class UserListView(APIView):
     permission_classes = [IsAdmin]
 
     def get(self, request):
-        role = request.query_params.get('role', 'USER')
-        result = UserService.get_user_list(role=role)
+        role_param = request.query_params.get('role', 'USER')
+        
+        # Security: Only SuperAdmin can see other Admins/SuperAdmins
+        if request.user.role == 2 and role_param != 'USER':
+            return APIResponse(APIStatus.ERROR, error="Access denied", status_code=status.HTTP_403_FORBIDDEN)
+            
+        result = UserService.get_user_list(role=role_param)
         return APIResponse(APIStatus.SUCCESS, data=result.data)
 
     def post(self, request):
+        requested_role = int(request.data.get('role', 3))
+        
+        # Security: Admin (2) can only create User (3). SuperAdmin (1) can create Admin (2) or User (3).
+        if request.user.role == 2 and requested_role != 3:
+            return APIResponse(APIStatus.ERROR, error="Admins can only register regular users", status_code=status.HTTP_403_FORBIDDEN)
+        
+        if request.user.role == 1 and requested_role not in [2, 3]:
+             return APIResponse(APIStatus.ERROR, error="Invalid role requested", status_code=status.HTTP_400_BAD_REQUEST)
+
         result = UserService.create_user(
             username=request.data.get('username'),
             password=request.data.get('password'),
             email=request.data.get('email', ''),
-            role=3,
+            role=requested_role,
             image_input=request.data.get('image_input')
         )
         if result.is_success:

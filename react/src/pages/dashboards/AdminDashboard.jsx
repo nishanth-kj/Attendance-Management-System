@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Users, UserPlus, Shield, Activity, BarChart3, Database, Globe, Bell } from 'lucide-react';
+import { Camera, Users, FileText, Calendar, Clock, UserCheck, MessageSquare, PlusCircle } from 'lucide-react';
 import StatsGrid from '@/components/dashboard/StatsGrid';
 import AttendanceChart from '@/components/dashboard/AttendanceChart';
 import RecentActivity from '@/components/dashboard/RecentActivity';
@@ -13,58 +13,71 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
     );
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-in fade-in duration-700">
             <DashboardHeader user={user} onExport={handleExport} />
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="md:col-span-3 space-y-6">
-                    {/* Admin Command Center */}
-                    <div className="bg-card p-6 rounded-lg shadow-sm border border-border transition-all">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold font-display text-foreground flex items-center gap-2">
-                                <Shield className="text-destructive" size={20} />
-                                System Administration
-                            </h3>
-                            <div className="flex gap-2">
-                                <span className="px-2 py-1 bg-green-500/10 text-green-500 text-[10px] font-bold rounded-sm border border-green-500/20 uppercase tracking-wider">Server: Online</span>
-                                <span className="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-sm border border-primary/20 uppercase tracking-wider">v2.1.0</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Main Staff Functional Area */}
+                <div className="md:col-span-2 space-y-6">
+                    <div className="bg-card p-8 rounded-lg shadow-sm border border-border flex flex-col lg:flex-row items-center gap-10 relative overflow-hidden group">
+                         <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-1000">
+                            <Camera size={180} />
+                        </div>
+                        
+                        <div className="w-full lg:w-3/5 space-y-5 text-center lg:text-left z-10">
+                            <h2 className="text-4xl font-display font-black text-foreground leading-tight tracking-tight">
+                                IDENTITY <br />
+                                <span className="text-primary">RECOGNITION</span>
+                            </h2>
+                            <p className="text-[11px] font-bold text-muted-foreground leading-relaxed uppercase tracking-wider opacity-70">
+                                INITIALIZE THE BIOMETRIC SENSOR TO AUTOMATICALLY VERIFY AND LOG ATTENDANCE FOR ACTIVE SESSIONS.
+                            </p>
+                            <div className="pt-4">
+                                <button
+                                    onClick={() => navigate('/attendance')}
+                                    className="inline-flex items-center gap-3 px-10 py-5 bg-primary text-primary-foreground rounded-md font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/40 hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 group/btn"
+                                >
+                                    <Camera size={22} className="group-hover/btn:rotate-12 transition-transform" />
+                                    Launch Scanner
+                                </button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            <button
-                                onClick={() => navigate('/users/add')}
-                                className="group p-4 bg-secondary/50 hover:bg-card border border-border hover:border-primary rounded-lg transition-all duration-300 flex flex-col items-center text-center gap-3"
-                            >
-                                <div className="p-3 bg-card rounded-md shadow-sm group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                                    <UserPlus size={20} />
-                                </div>
-                                <span className="text-xs font-bold text-muted-foreground group-hover:text-primary uppercase tracking-wide">Register User</span>
-                            </button>
+                        <div className="w-full lg:w-2/5 grid grid-cols-2 gap-4 z-10">
                             <button
                                 onClick={() => navigate('/users')}
-                                className="group p-4 bg-secondary/50 hover:bg-card border border-border hover:border-indigo-500 rounded-lg transition-all duration-300 flex flex-col items-center text-center gap-3"
+                                className="p-5 bg-secondary/30 border border-border rounded-xl hover:border-primary hover:bg-card transition-all flex flex-col items-center gap-3 group/item shadow-sm"
                             >
-                                <div className="p-3 bg-card rounded-md shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                <div className="p-3 bg-card rounded-lg text-primary shadow-sm group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-all">
                                     <Users size={20} />
                                 </div>
-                                <span className="text-xs font-bold text-muted-foreground group-hover:text-indigo-600 uppercase tracking-wide">User Directory</span>
+                                <span className="text-[10px] font-black text-muted-foreground group-hover/item:text-primary uppercase tracking-widest">Directory</span>
                             </button>
                             <button
-                                className="group p-4 bg-secondary/50 hover:bg-card border border-border hover:border-amber-500 rounded-lg transition-all duration-300 flex flex-col items-center text-center gap-3"
+                                onClick={() => navigate('/users/add')}
+                                className="p-5 bg-secondary/30 border border-border rounded-xl hover:border-primary hover:bg-card transition-all flex flex-col items-center gap-3 group/item shadow-sm"
                             >
-                                <div className="p-3 bg-card rounded-md shadow-sm group-hover:bg-amber-600 group-hover:text-white transition-all">
-                                    <Database size={20} />
+                                <div className="p-3 bg-card rounded-lg text-primary shadow-sm group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-all">
+                                    <PlusCircle size={20} />
                                 </div>
-                                <span className="text-xs font-bold text-muted-foreground group-hover:text-amber-600 uppercase tracking-wide">Backup Data</span>
+                                <span className="text-[10px] font-black text-muted-foreground group-hover/item:text-primary uppercase tracking-widest">Enrol User</span>
                             </button>
                             <button
-                                className="group p-4 bg-secondary/50 hover:bg-card border border-border hover:border-rose-500 rounded-lg transition-all duration-300 flex flex-col items-center text-center gap-3"
+                                onClick={() => navigate('/reports')}
+                                className="p-5 bg-secondary/30 border border-border rounded-xl hover:border-primary hover:bg-card transition-all flex flex-col items-center gap-3 group/item shadow-sm"
                             >
-                                <div className="p-3 bg-card rounded-md shadow-sm group-hover:bg-rose-600 group-hover:text-white transition-all">
-                                    <Globe size={20} />
+                                <div className="p-3 bg-card rounded-lg text-primary shadow-sm group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-all">
+                                    <FileText size={20} />
                                 </div>
-                                <span className="text-xs font-bold text-muted-foreground group-hover:text-rose-600 uppercase tracking-wide">Global Settings</span>
+                                <span className="text-[10px] font-black text-muted-foreground group-hover/item:text-primary uppercase tracking-widest">Logs</span>
+                            </button>
+                            <button
+                                className="p-5 bg-secondary/30 border border-border rounded-xl hover:border-primary hover:bg-card transition-all flex flex-col items-center gap-3 group/item shadow-sm"
+                            >
+                                <div className="p-3 bg-card rounded-lg text-primary shadow-sm group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-all">
+                                    <MessageSquare size={20} />
+                                </div>
+                                <span className="text-[10px] font-black text-muted-foreground group-hover/item:text-primary uppercase tracking-widest">Notice</span>
                             </button>
                         </div>
                     </div>
@@ -74,56 +87,48 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
                     <AttendanceChart data={analytics?.trends || []} />
                 </div>
 
+                {/* Sidebar Metrics */}
                 <div className="md:col-span-1 space-y-6">
-                    {/* System Health */}
-                    <div className="bg-card p-6 rounded-lg shadow-sm border border-border">
-                        <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4">System Health</h3>
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-xs">
-                                    <span className="font-semibold text-muted-foreground">AI Model Load</span>
-                                    <span className="text-primary font-bold">14%</span>
-                                </div>
-                                <div className="h-1.5 bg-secondary rounded-sm overflow-hidden">
-                                    <div className="h-full bg-primary rounded-sm w-[14%]"></div>
-                                </div>
+                    {/* Live Session Monitor */}
+                    <div className="bg-card p-6 rounded-lg shadow-xl border border-border relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-1.5 h-full bg-primary"></div>
+                        <div className="flex justify-between items-center mb-8">
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Monitoring Session</span>
+                            <span className="flex items-center gap-2 text-[10px] font-black text-green-500 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span>
+                                ACTIVE
+                            </span>
+                        </div>
+                        <h4 className="text-xl font-display font-bold text-foreground mb-1 leading-tight">Biometric System</h4>
+                        <p className="text-[10px] text-muted-foreground mb-8 flex items-center gap-2 font-bold uppercase tracking-widest opacity-60">
+                            <Clock size={14} className="text-primary" /> Live Validation Active
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 bg-secondary/50 rounded-lg border border-border text-center">
+                                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-1 opacity-50">Total Enrolled</p>
+                                <p className="text-2xl font-black text-foreground">48</p>
                             </div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-xs">
-                                    <span className="font-semibold text-muted-foreground">Storage Usage</span>
-                                    <span className="text-green-500 font-bold">42%</span>
-                                </div>
-                                <div className="h-1.5 bg-secondary rounded-sm overflow-hidden">
-                                    <div className="h-full bg-green-500 rounded-sm w-[42%]"></div>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-xs">
-                                    <span className="font-semibold text-muted-foreground">API Latency</span>
-                                    <span className="text-amber-500 font-bold">24ms</span>
-                                </div>
-                                <div className="h-1.5 bg-secondary rounded-sm overflow-hidden">
-                                    <div className="h-full bg-amber-500 rounded-sm w-[10%]"></div>
-                                </div>
+                            <div className="p-4 bg-secondary/50 rounded-lg border border-border text-center">
+                                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-1 opacity-50">Present</p>
+                                <p className="text-2xl font-black text-primary">32</p>
                             </div>
                         </div>
                     </div>
 
                     <RecentActivity logs={filteredLogs} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-                    {/* Quick Notifications */}
-                    <div className="bg-indigo-600 p-6 rounded-md shadow-lg text-white relative overflow-hidden">
-                        <Bell className="absolute -right-2 -bottom-2 opacity-10 w-24 h-24" />
-                        <h3 className="font-bold mb-2 flex items-center gap-2">
-                            <Activity size={18} />
-                            Admin Alert
-                        </h3>
-                        <p className="text-xs text-indigo-100 mb-4 leading-relaxed">
-                            System maintenance is scheduled for Sunday at 02:00 AM UTC.
+                    {/* Feedback Alert */}
+                    <div className="p-6 bg-primary/10 border-2 border-dashed border-primary/30 rounded-xl relative overflow-hidden group">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-primary text-primary-foreground rounded-lg shadow-lg group-hover:rotate-12 transition-transform">
+                                <UserCheck size={18} />
+                            </div>
+                            <h4 className="font-black text-foreground text-xs uppercase tracking-widest">Verification Success</h4>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground leading-relaxed font-bold uppercase tracking-tighter opacity-80">
+                            AI model successfully synchronized with local database. Face recognition precision improved by 0.4%.
                         </p>
-                        <button className="text-[10px] bg-white text-indigo-600 px-3 py-1.5 rounded font-bold uppercase tracking-wider hover:bg-indigo-50 transition-colors">
-                            Acknowledge
-                        </button>
                     </div>
                 </div>
             </div>

@@ -7,7 +7,7 @@ import api from '@/lib/api';
 const AddUser = () => {
     const navigate = useNavigate();
     const webcamRef = useRef(null);
-    const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+    const [formData, setFormData] = useState({ username: '', email: '', password: '', role: 3 });
     const [image, setImage] = useState(null);
     const [isCapturing, setIsCapturing] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,17 +36,17 @@ const AddUser = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="mb-4">
                 <Link to="/users" className="text-sm font-bold text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-                    <ArrowLeft size={16} /> BACK TO REGISTRY
+                    <ArrowLeft size={16} /> BACK TO USER REGISTRY
                 </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 {/* Biometric Capture */}
                 <div className="md:col-span-4 bg-card p-6 rounded-lg shadow-sm border border-border">
-                    <h3 className="text-lg font-bold text-foreground mb-4 text-center">Biometrics</h3>
+                    <h3 className="text-lg font-bold text-foreground mb-4 text-center">User Biometrics</h3>
 
                     <div className="relative w-full aspect-square bg-secondary/50 rounded-md border-2 border-dashed border-border overflow-hidden mb-4 group transition-all">
                         {isCapturing ? (
@@ -95,7 +95,7 @@ const AddUser = () => {
 
                 {/* User Details */}
                 <div className="md:col-span-8 bg-card p-6 rounded-lg shadow-sm border border-border">
-                    <h2 className="text-xl font-bold text-foreground mb-6">Register User</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-6">Enroll New User</h2>
 
                     {error && (
                         <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-md mb-6 text-sm flex items-center gap-2">
@@ -106,7 +106,7 @@ const AddUser = () => {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div className="sm:col-span-2">
-                                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Full Name</label>
+                                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Full Name / Student Name</label>
                                 <input
                                     type="text"
                                     required
@@ -117,7 +117,7 @@ const AddUser = () => {
                                 />
                             </div>
                             <div className="sm:col-span-2">
-                                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Password</label>
+                                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 ml-1">Account Password</label>
                                 <input
                                     type="password"
                                     required
@@ -135,7 +135,7 @@ const AddUser = () => {
                                 disabled={isSubmitting}
                                 className="px-8 py-3 bg-primary text-primary-foreground rounded-md text-sm font-bold hover:opacity-90 transition-all disabled:opacity-70 shadow-lg shadow-primary/20"
                             >
-                                {isSubmitting ? 'Enrolling User...' : 'Enroll User'}
+                                {isSubmitting ? 'Enrolling User...' : 'Complete Enrollment'}
                             </button>
                         </div>
                     </form>

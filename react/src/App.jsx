@@ -7,6 +7,7 @@ import Dashboard from '@/pages/Dashboard';
 import Attendance from '@/pages/Attendance';
 import ViewUsers from '@/pages/ViewUsers';
 import AddUser from '@/pages/AddUser';
+import AddAdmin from '@/pages/AddAdmin';
 import UserDetails from '@/pages/UserDetails';
 import AttendanceReport from '@/pages/AttendanceReport';
 import Profile from '@/pages/Profile';
@@ -79,8 +80,16 @@ function App() {
           <Route
             path="/users/add"
             element={
-              <ProtectedRoute allowedRoles={[1, 2]}>
+              <ProtectedRoute allowedRoles={[2]}>
                 <AddUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admins/add"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <AddAdmin />
               </ProtectedRoute>
             }
           />
