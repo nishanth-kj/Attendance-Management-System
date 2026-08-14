@@ -26,12 +26,12 @@ const LandingNavbar = () => {
                     <div className="hidden md:flex items-center space-x-8">
                         <a href="#features" className="text-muted-foreground hover:text-primary font-medium transition-colors">Features</a>
                         <a href="#about" className="text-muted-foreground hover:text-primary font-medium transition-colors">About</a>
-                        <Link
+                        {/* <Link
                             to="/admin-login"
                             className="text-muted-foreground hover:text-destructive font-medium transition-colors"
                         >
                             Admin
-                        </Link>
+                        </Link> */}
                         
                         <button
                             onClick={toggleTheme}
@@ -85,13 +85,13 @@ const LandingNavbar = () => {
                         >
                             About
                         </a>
-                        <Link
+                        {/* <Link
                             to="/admin-login"
                             className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-destructive hover:bg-secondary"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             Admin Portal
-                        </Link>
+                        </Link> */}
                         <div className="pt-4 mt-2 border-t border-border">
                             <Link
                                 to="/login"
