@@ -13,10 +13,15 @@ class UserListView(APIView):
     permission_classes = [IsAdmin]
 
     def get(self, request):
-        role_param = request.query_params.get('role', 'USER')
+        role_param = request.query_params.get('role', 3)
+        
+        try:
+            role_param = int(role_param)
+        except ValueError:
+            return APIResponse(APIStatus.ERROR, error="Invalid role parameter", status_code=status.HTTP_400_BAD_REQUEST)
         
         # Security: Only SuperAdmin can see other Admins/SuperAdmins
-        if request.user.role == 2 and role_param != 'USER':
+        if request.user.role == 2 and role_param != 3:
             return APIResponse(APIStatus.ERROR, error="Access denied", status_code=status.HTTP_403_FORBIDDEN)
             
         result = UserService.get_user_list(role=role_param)
