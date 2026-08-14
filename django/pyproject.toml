@@ -17,7 +17,8 @@ dependencies = [
     "dill==0.3.8",
     # "dlib",  # Manually managed due to build issues
     # "face-recognition", # Manually managed due to build issues
-    "face_recognition_models==0.3.0",
+    "deepface>=0.0.92",
+    "tf-keras>=2.16.0",
     "isort==5.13.2",
     "mccabe==0.7.0",
     "numpy==1.26.4",
