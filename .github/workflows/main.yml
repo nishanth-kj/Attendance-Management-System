@@ -35,11 +35,11 @@ jobs:
         node-version: '18'
     - name: Install dependencies
       run: |
-        cd react-app
+        cd react
         npm install
     - name: Build check
       run: |
-        cd react-app
+        cd react
         npm run build
 
   docker-build:
@@ -51,4 +51,4 @@ jobs:
     - name: Build Backend Image
       run: docker build ./django -t attendance-backend:latest
     - name: Build Frontend Image
-      run: docker build ./react-app -t attendance-frontend:latest
+      run: docker build ./react -t attendance-frontend:latest
