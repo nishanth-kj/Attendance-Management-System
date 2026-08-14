@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -18,12 +20,11 @@ jobs:
     - name: Install dependencies
       run: |
         cd django
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        uv sync
     - name: Run Backend Tests
       run: |
         cd django
-        python manage.py test
+        uv run python manage.py test
 
   frontend-check:
     runs-on: ubuntu-latest
