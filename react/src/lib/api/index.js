@@ -1,4 +1,4 @@
-import { ApiService } from '../ApiService';
+import { ApiService } from './ApiService';
 
 // Global generic instance
 const api = new ApiService();

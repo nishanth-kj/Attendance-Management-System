@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Camera, Shield, FileText, Smartphone, Cloud, Lock } from 'lucide-react';
-import LandingNavbar from '@/components/LandingNavbar';
-import Footer from '@/components/Footer';
+import LandingNavbar from '@/layout/components/LandingNavbar';
+import Footer from '@/layout/components/Footer';
 
 const Home = () => {
     return (

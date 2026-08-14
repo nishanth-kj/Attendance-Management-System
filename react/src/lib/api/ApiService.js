@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_BASE_URL, API_STATUS } from '@/constants';
+import { API_BASE_URL, RESPONSE_STATUS } from '@/constants';
 
 /**
  * Core ApiService - Generic HTTP Client
@@ -55,7 +55,7 @@ export class ApiService {
             (response) => {
                 const res = response.data;
                 // Check for integer status 1 (Success)
-                if (res && res.status === API_STATUS.SUCCESS) {
+                if (res && res.status === RESPONSE_STATUS.SUCCESS.code) {
                     return res.data; // Return just the data part
                 }
                 return response.data;

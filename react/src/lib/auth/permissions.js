@@ -1,11 +1,4 @@
-/**
- * Role Constants
- */
-export const ROLES = {
-    SUPERADMIN: 1,
-    ADMIN: 2,
-    USER: 3
-};
+import { ROLE } from '@/constants';
 
 /**
  * Check if user has a specific role or higher
@@ -22,9 +15,10 @@ export const hasRole = (user, requiredRole) => {
 /**
  * Permission check helpers
  */
-export const isSuperAdmin = (user) => hasRole(user, ROLES.SUPERADMIN);
-export const isAdmin = (user) => hasRole(user, ROLES.ADMIN);
-export const isUser = (user) => user?.role === ROLES.USER;
+export const isSuperAdmin = (user) => hasRole(user, ROLE.SUPERADMIN.code);
+export const isAdmin = (user) => hasRole(user, ROLE.ADMIN.code);
+export const isUser = (user) => user?.role === ROLE.USER.code;
+
 
 /**
  * Specific action permissions

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from '@/components/Sidebar';
-import TopBar from '@/components/TopBar';
+import Sidebar from './components/Sidebar';
+import TopBar from './components/TopBar';
 
 const Layout = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);

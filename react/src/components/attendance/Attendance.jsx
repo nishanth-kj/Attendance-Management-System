@@ -3,7 +3,7 @@ import Webcam from 'react-webcam';
 import { Link } from 'react-router-dom';
 import { Camera, ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react';
 import api from '@/lib/api';
-import { API_STATUS } from '@/constants';
+import { RESPONSE_STATUS } from '@/constants';
 
 const Attendance = () => {
     const webcamRef = useRef(null);
@@ -23,10 +23,10 @@ const Attendance = () => {
 
             try {
                 const data = await api.post('/attendance/mark/', { image: imageSrc });
-                setResult(API_STATUS.SUCCESS);
+                setResult(RESPONSE_STATUS.SUCCESS.code);
                 setUserInfo(data);
             } catch (err) {
-                setResult(API_STATUS.ERROR);
+                setResult(RESPONSE_STATUS.ERROR.code);
                 setError(err || 'No face detected or match found');
             } finally {
                 setIsCapturing(false);
@@ -61,13 +61,13 @@ const Attendance = () => {
                     </div>
 
                     {result && (
-                        <div className={`mb-6 p-4 rounded-md border flex items-center justify-center gap-2 font-bold ${result === API_STATUS.SUCCESS
+                        <div className={`mb-6 p-4 rounded-md border flex items-center justify-center gap-2 font-bold ${result === RESPONSE_STATUS.SUCCESS.code
                             ? 'bg-primary/10 border-primary/20 text-primary'
                             : 'bg-destructive/10 border-destructive/20 text-destructive'
                             }`}>
-                            {result === API_STATUS.SUCCESS ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
+                            {result === RESPONSE_STATUS.SUCCESS.code ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
                             <span>
-                                {result === API_STATUS.SUCCESS
+                                {result === RESPONSE_STATUS.SUCCESS.code
                                     ? `Success! Attendance marked for ${userInfo?.name}`
                                     : error}
                             </span>
