@@ -14,7 +14,6 @@ import UserDetails from '@/components/users/UserDetails';
 import AttendanceReport from '@/components/attendance/AttendanceReport';
 import Profile from '@/components/users/Profile';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import AdminLogin from '@/components/auth/AdminLogin';
 import { ROLE } from '@/constants';
 
 export default function AppRoutes() {
@@ -22,7 +21,6 @@ export default function AppRoutes() {
     // Public Routes (No Sidebar)
     { path: '/', element: <Home /> },
     { path: '/login', element: <Login /> },
-    { path: '/admin-login', element: <AdminLogin /> },
     { path: '/signup', element: <Signup /> },
 
     // Admin & SuperAdmin Routes
