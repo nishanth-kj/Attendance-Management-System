@@ -1,20 +1,8 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth/AuthContext';
-import {
-    Camera,
-    LayoutDashboard,
-    Users,
-    FileText,
-    User,
-    LogOut,
-    ChevronLeft,
-    ChevronRight,
-    ScanFace,
-    UserPlus,
-    ShieldPlus
-} from 'lucide-react';
+import { ScanFace, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
+const Sidebar = ({ isOpen, toggleSidebar, links = [], activeId, onNavigate }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -22,23 +10,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         logout();
         navigate('/login');
     };
-
-    const navLinks = [
-        { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['AUTHENTICATED'] },
-        { path: '/attendance', label: 'Attendance', icon: Camera, roles: ['ANY'] },
-        { path: '/users', label: 'Users', icon: Users, roles: [1, 2] },
-        { path: '/users/add', label: 'Add User', icon: UserPlus, roles: [2] },
-        { path: '/admins/add', label: 'Add Admin', icon: ShieldPlus, roles: [1] },
-        { path: '/reports', label: 'Reports', icon: FileText, roles: [1, 2] },
-        { path: '/profile', label: 'My Profile', icon: User, roles: ['AUTHENTICATED'] },
-    ];
-
-    const filteredLinks = navLinks.filter(link => {
-        if (link.roles.includes('ANY')) return true;
-        if (!user) return false;
-        if (link.roles.includes('AUTHENTICATED')) return true;
-        return link.roles.includes(user.role);
-    });
 
     return (
         <>
@@ -74,23 +45,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 </div>
 
                 <div className="flex-1 overflow-y-auto py-4 space-y-1">
-                    {filteredLinks.map((link) => (
-                        <NavLink
-                            key={link.path}
-                            to={link.path}
-                            className={({ isActive }) => `
-                                flex items-center px-4 py-3 mx-2 rounded-lg text-sm font-medium transition-all
-                                ${isActive
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}
-                                ${!isOpen && 'justify-center px-2'}
-                            `}
-                            title={!isOpen ? link.label : ''}
-                        >
-                            <link.icon size={20} className="shrink-0" />
-                            {isOpen && <span className="ml-3 truncate">{link.label}</span>}
-                        </NavLink>
-                    ))}
+                    {links.map((link) => {
+                        return (
+                            <button
+                                key={link.id}
+                                onClick={() => onNavigate(link.id)}
+                                className={`
+                                    w-full flex items-center px-4 py-3 mx-2 rounded-lg text-sm font-medium transition-all
+                                    ${activeId === link.id
+                                        ? 'bg-primary/10 text-primary'
+                                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}
+                                    ${!isOpen && 'justify-center px-2'}
+                                `}
+                                title={!isOpen ? link.label : ''}
+                            >
+                                {link.icon && <link.icon size={20} className="shrink-0" />}
+                                {isOpen && <span className="ml-3 truncate">{link.label}</span>}
+                            </button>
+                        );
+                    })}
                 </div>
 
                 <div className="border-t border-border p-4 bg-card">
@@ -145,25 +118,29 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
                         <div className="flex-1 h-0 overflow-y-auto py-4">
                             <nav className="space-y-1 px-2">
-                                {filteredLinks.map((link) => (
-                                    <NavLink
-                                        key={link.path}
-                                        to={link.path}
-                                        onClick={toggleSidebar}
-                                        className={({ isActive }) => `
-                                            flex items-center px-4 py-3 rounded-lg text-base font-medium transition-all
-                                            ${isActive
-                                                ? 'bg-primary/10 text-primary'
-                                                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}
-                                        `}
-                                    >
-                                        <link.icon size={24} className="mr-4" />
-                                        {link.label}
-                                    </NavLink>
-                                ))}
+                                {links.map((link) => {
+                                    return (
+                                        <button
+                                            key={link.id}
+                                            onClick={() => {
+                                                onNavigate(link.id);
+                                                toggleSidebar();
+                                            }}
+                                            className={`
+                                                w-full flex items-center px-4 py-3 rounded-lg text-base font-medium transition-all
+                                                ${activeId === link.id
+                                                    ? 'bg-primary/10 text-primary'
+                                                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}
+                                            `}
+                                        >
+                                            {link.icon && <link.icon size={24} className="mr-4" />}
+                                            {link.label}
+                                        </button>
+                                    );
+                                })}
                             </nav>
                         </div>
- 
+
                         <div className="border-t border-border p-4">
                             {user && (
                                 <button

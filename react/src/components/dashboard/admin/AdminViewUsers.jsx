@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserPlus, Search, Trash2, User } from 'lucide-react';
 import api from '@/lib/api';
+import { useAuth } from '@/lib/auth/AuthContext';
 
-const ViewUsers = () => {
+const AdminViewUsers = () => {
     const { user } = useAuth();
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -154,4 +155,4 @@ const ViewUsers = () => {
     );
 };
 
-export default ViewUsers;
+export default AdminViewUsers;

@@ -4,7 +4,7 @@ import Webcam from 'react-webcam';
 import { ArrowLeft, Camera, RefreshCw, CheckCircle, AlertTriangle, ShieldCheck } from 'lucide-react';
 import api from '@/lib/api';
 
-const AddAdmin = () => {
+const SuperAdminAddAdmin = () => {
     const navigate = useNavigate();
     const webcamRef = useRef(null);
     const [formData, setFormData] = useState({ username: '', email: '', password: '', role: 2 });
@@ -152,4 +152,4 @@ const AddAdmin = () => {
     );
 };
 
-export default AddAdmin;
+export default SuperAdminAddAdmin;

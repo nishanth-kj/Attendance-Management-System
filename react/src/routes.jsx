@@ -1,18 +1,9 @@
 import { useRoutes, Navigate } from 'react-router-dom';
-import Layout from '@/layout/Layout';
-import AdminLayout from '@/layout/AdminLayout';
-import UserLayout from '@/layout/UserLayout';
-import Home from '@/components/home/Home';
-import Login from '@/components/auth/Login';
-import Signup from '@/components/auth/Signup';
-import Dashboard from '@/components/dashboard/Dashboard';
-import Attendance from '@/components/dashboard/Attendance';
-import ViewUsers from '@/components/ui/ViewUsers';
-import AddUser from '@/components/ui/AddUser';
-import AddAdmin from '@/components/ui/AddAdmin';
-import UserDetails from '@/components/ui/UserDetails';
-import AttendanceReport from '@/components/dashboard/AttendanceReport';
-import Profile from '@/components/ui/Profile';
+import Home from '@/pages/Home';
+import Login from '@/pages/Login';
+import Signup from '@/pages/Signup';
+import Dashboard from '@/pages/Dashboard';
+import AdminUserDetails from '@/components/dashboard/admin/AdminUserDetails';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { ROLE } from '@/constants';
 
@@ -23,36 +14,18 @@ export default function AppRoutes() {
     { path: '/login', element: <Login /> },
     { path: '/signup', element: <Signup /> },
 
-    // Admin & SuperAdmin Routes
-    {
-      element: <AdminLayout />,
-      children: [
-        { path: '/admin-dashboard', element: <Dashboard /> },
-        { path: '/users', element: <ViewUsers /> },
-        // Fine-grained protection since AdminLayout allows BOTH Admin and SuperAdmin
-        { path: '/users/add', element: <ProtectedRoute allowedRoles={[ROLE.ADMIN.code]}><AddUser /></ProtectedRoute> },
-        { path: '/admins/add', element: <ProtectedRoute allowedRoles={[ROLE.SUPERADMIN.code]}><AddAdmin /></ProtectedRoute> },
-        { path: '/users/:username', element: <UserDetails /> },
-        { path: '/reports', element: <AttendanceReport /> }
-      ]
-    },
+    // Role-specific Base Application Routes
+    { path: '/dashboard', element: <Dashboard /> },
 
-    // User Routes
-    {
-      element: <UserLayout />,
-      children: [
-        { path: '/user-dashboard', element: <Dashboard /> },
-      ]
-    },
 
-    // General Protected Application Routes (Accessible by any authenticated role)
+    // Detail Pages (Without Sidebar context, or manually wrapped later)
     {
-      element: <Layout />,
-      children: [
-        { path: '/dashboard', element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
-        { path: '/attendance', element: <ProtectedRoute><Attendance /></ProtectedRoute> },
-        { path: '/profile', element: <ProtectedRoute><Profile /></ProtectedRoute> },
-      ]
+      path: '/users/:username',
+      element: (
+        <ProtectedRoute allowedRoles={[ROLE.ADMIN.code, ROLE.SUPERADMIN.code]}>
+          <AdminUserDetails />
+        </ProtectedRoute>
+      )
     },
 
     // Catch all - redirect to home

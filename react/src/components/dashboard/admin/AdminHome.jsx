@@ -1,14 +1,50 @@
-import { useNavigate } from 'react-router-dom';
+// Removed useNavigate
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/auth/AuthContext';
+import api from '@/lib/api';
 import { Camera, Users, FileText, Calendar, Clock, UserCheck, MessageSquare, PlusCircle } from 'lucide-react';
-import StatsGrid from '@/components/dashboard/StatsGrid';
-import AttendanceChart from '@/components/dashboard/AttendanceChart';
-import RecentActivity from '@/components/dashboard/RecentActivity';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import StatsGrid from '@/components/dashboard/shared/StatsGrid';
+import AttendanceChart from '@/components/dashboard/shared/AttendanceChart';
+import RecentActivity from '@/components/dashboard/shared/RecentActivity';
+import DashboardHeader from '@/components/dashboard/shared/DashboardHeader';
 
-const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSearchTerm }) => {
-    const navigate = useNavigate();
+const AdminHome = ({ onNavigate }) => {
+    const { user } = useAuth();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [logs, setLogs] = useState([]);
+    const [analytics, setAnalytics] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const filteredLogs = logs.filter(log =>
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!user) return;
+            try {
+                const logsData = await api.get('/attendance/logs/');
+                setLogs(logsData || []);
+                const analyticsData = await api.get('/attendance/analytics/');
+                setAnalytics(analyticsData);
+            } catch (err) {
+                console.error("Dashboard Sync Failed", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, [user]);
+
+    const handleExport = () => {
+        window.open(`${import.meta.env.VITE_API_URL}attendance/logs/?format=csv`, '_blank');
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex h-64 items-center justify-center">
+                <div className="text-xl text-gray-500 font-medium animate-pulse">Loading Dashboard...</div>
+            </div>
+        );
+    }
+
+    const filteredLogs = (logs || []).filter(log =>
         log.User_name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -20,10 +56,10 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
                 {/* Main Staff Functional Area */}
                 <div className="md:col-span-2 space-y-6">
                     <div className="bg-card p-8 rounded-lg shadow-sm border border-border flex flex-col lg:flex-row items-center gap-10 relative overflow-hidden group">
-                         <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-1000">
+                        <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-1000">
                             <Camera size={180} />
                         </div>
-                        
+
                         <div className="w-full lg:w-3/5 space-y-5 text-center lg:text-left z-10">
                             <h2 className="text-4xl font-display font-black text-foreground leading-tight tracking-tight">
                                 IDENTITY <br />
@@ -34,7 +70,7 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
                             </p>
                             <div className="pt-4">
                                 <button
-                                    onClick={() => navigate('/attendance')}
+                                    onClick={() => onNavigate('attendance')}
                                     className="inline-flex items-center gap-3 px-10 py-5 bg-primary text-primary-foreground rounded-md font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/40 hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 group/btn"
                                 >
                                     <Camera size={22} className="group-hover/btn:rotate-12 transition-transform" />
@@ -45,7 +81,7 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
 
                         <div className="w-full lg:w-2/5 grid grid-cols-2 gap-4 z-10">
                             <button
-                                onClick={() => navigate('/users')}
+                                onClick={() => onNavigate('users')}
                                 className="p-5 bg-secondary/30 border border-border rounded-xl hover:border-primary hover:bg-card transition-all flex flex-col items-center gap-3 group/item shadow-sm"
                             >
                                 <div className="p-3 bg-card rounded-lg text-primary shadow-sm group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-all">
@@ -54,7 +90,7 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
                                 <span className="text-[10px] font-black text-muted-foreground group-hover/item:text-primary uppercase tracking-widest">Directory</span>
                             </button>
                             <button
-                                onClick={() => navigate('/users/add')}
+                                onClick={() => onNavigate('add-user')}
                                 className="p-5 bg-secondary/30 border border-border rounded-xl hover:border-primary hover:bg-card transition-all flex flex-col items-center gap-3 group/item shadow-sm"
                             >
                                 <div className="p-3 bg-card rounded-lg text-primary shadow-sm group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-all">
@@ -63,7 +99,7 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
                                 <span className="text-[10px] font-black text-muted-foreground group-hover/item:text-primary uppercase tracking-widest">Enrol User</span>
                             </button>
                             <button
-                                onClick={() => navigate('/reports')}
+                                onClick={() => onNavigate('reports')}
                                 className="p-5 bg-secondary/30 border border-border rounded-xl hover:border-primary hover:bg-card transition-all flex flex-col items-center gap-3 group/item shadow-sm"
                             >
                                 <div className="p-3 bg-card rounded-lg text-primary shadow-sm group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-all">
@@ -136,4 +172,4 @@ const AdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSe
     );
 };
 
-export default AdminDashboard;
+export default AdminHome;

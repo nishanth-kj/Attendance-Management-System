@@ -36,13 +36,11 @@ jobs:
           npm install
 
       - name: Create .env File
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           cd react
-          echo "DEBUG=False" > .env
-          echo "SECRET_KEY=generate-a-secure-secret-key" >> .env
-          echo "DATABASE_URL=postgres://user:password@localhost:5432/dbname" >> .env
-          echo "ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
-          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          echo "VITE_API_URL=${VITE_API_URL}" > .env
 
       - name: Build UI
         run: |

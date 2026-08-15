@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { User, Mail, Shield, CreditCard, Building, Phone, MapPin, QrCode } from 'lucide-react';
 
-const Profile = () => {
+const AdminProfile = () => {
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('details');
 
@@ -152,4 +152,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default AdminProfile;

@@ -5,7 +5,7 @@ import { Camera, ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react';
 import api from '@/lib/api';
 import { RESPONSE_STATUS } from '@/constants';
 
-const Attendance = () => {
+const AdminAttendance = () => {
     const webcamRef = useRef(null);
     const [isCapturing, setIsCapturing] = useState(false);
     const [result, setResult] = useState(null);
@@ -87,4 +87,4 @@ const Attendance = () => {
     );
 };
 
-export default Attendance;
+export default AdminAttendance;

@@ -12,8 +12,7 @@ class AuthService(BaseService):
         if user:
             refresh = RefreshToken.for_user(user)
             data = {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
+                "token": str(refresh.access_token),
                 "user": UserService.user_to_dict(user)
             }
             return cls.success(data, "Login successful")

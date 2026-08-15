@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import { Search, Filter, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const AttendanceReport = () => {
+const SuperAdminAttendanceReport = () => {
     const [logs, setLogs] = useState([]);
     const [filteredLogs, setFilteredLogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -191,4 +191,4 @@ const AttendanceReport = () => {
     );
 };
 
-export default AttendanceReport;
+export default SuperAdminAttendanceReport;

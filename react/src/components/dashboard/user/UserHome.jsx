@@ -1,8 +1,39 @@
-import { User, CheckCircle, Clock, BookOpen, UserCheck, Calendar, Trophy, Zap, ArrowUpRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { User, CheckCircle, Clock, BookOpen, UserCheck, Calendar, Trophy, Zap, ArrowUpRight, Camera, LogOut, CheckCircle2, ChevronRight, MapPin, Activity } from 'lucide-react';
+import StatsGrid from '@/components/dashboard/shared/StatsGrid';
+import AttendanceChart from '@/components/dashboard/shared/AttendanceChart';
+import RecentActivity from '@/components/dashboard/shared/RecentActivity';
+import DashboardHeader from '@/components/dashboard/shared/DashboardHeader';
+import { useAuth } from '@/lib/auth/AuthContext';
+import api from '@/lib/api';
 
-const UserDashboard = ({ user, logs }) => {
-    // For user, logs are already filtered by backend typically
-    // Assuming 'logs' contains only THIS user's logs.
+const UserHome = ({ onNavigate }) => {
+    const { user } = useAuth();
+    const [logs, setLogs] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!user) return;
+            try {
+                const logsData = await api.get('/attendance/logs/');
+                setLogs(logsData || []);
+            } catch (err) {
+                console.error("Dashboard Sync Failed", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, [user]);
+
+    if (isLoading) {
+        return (
+            <div className="flex h-64 items-center justify-center">
+                <div className="text-xl text-gray-500 font-medium animate-pulse">Loading Dashboard...</div>
+            </div>
+        );
+    }
 
     // Basic stats calculation
     const totalSessions = logs.length;
@@ -179,4 +210,4 @@ const UserDashboard = ({ user, logs }) => {
     );
 };
 
-export default UserDashboard;
+export default UserHome;

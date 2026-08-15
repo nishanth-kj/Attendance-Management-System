@@ -15,11 +15,7 @@ const Login = () => {
         setLoading(true);
         try {
             const user = await login(formData.username, formData.password);
-            if (user?.role === 1 || user?.role === 2) {
-                navigate('/admin-dashboard');
-            } else if (user?.role === 3) {
-                navigate('/user-dashboard');
-            } else {
+            if (user) {
                 navigate('/dashboard');
             }
         } catch (err) {

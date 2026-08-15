@@ -1,12 +1,47 @@
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Users, UserPlus, Shield, Activity, BarChart3, Database, Globe, Bell, ShieldAlert } from 'lucide-react';
-import StatsGrid from '@/components/dashboard/StatsGrid';
-import AttendanceChart from '@/components/dashboard/AttendanceChart';
-import RecentActivity from '@/components/dashboard/RecentActivity';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import StatsGrid from '@/components/dashboard/shared/StatsGrid';
+import AttendanceChart from '@/components/dashboard/shared/AttendanceChart';
+import RecentActivity from '@/components/dashboard/shared/RecentActivity';
+import DashboardHeader from '@/components/dashboard/shared/DashboardHeader';
+import { useAuth } from '@/lib/auth/AuthContext';
+import api from '@/lib/api';
 
-const SuperAdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, setSearchTerm }) => {
-    const navigate = useNavigate();
+const SuperAdminHome = ({ onNavigate }) => {
+    const { user } = useAuth();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [logs, setLogs] = useState([]);
+    const [analytics, setAnalytics] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!user) return;
+            try {
+                const logsData = await api.get('/attendance/logs/');
+                setLogs(logsData || []);
+                const analyticsData = await api.get('/attendance/analytics/');
+                setAnalytics(analyticsData);
+            } catch (err) {
+                console.error("Dashboard Sync Failed", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, [user]);
+
+    const handleExport = () => {
+        window.open(`${import.meta.env.VITE_API_URL}attendance/logs/?format=csv`, '_blank');
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex h-64 items-center justify-center">
+                <div className="text-xl text-gray-500 font-medium animate-pulse">Loading Dashboard...</div>
+            </div>
+        );
+    }
 
     const filteredLogs = logs.filter(log =>
         log.User_name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,7 +75,7 @@ const SuperAdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, 
 
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
                             <button
-                                onClick={() => navigate('/admins/add')}
+                                onClick={() => onNavigate('add-admin')}
                                 className="group p-6 bg-secondary/30 hover:bg-card border border-border hover:border-primary rounded-xl transition-all duration-500 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-xl hover:-translate-y-1"
                             >
                                 <div className="p-4 bg-card rounded-lg shadow-md group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500">
@@ -49,7 +84,7 @@ const SuperAdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, 
                                 <span className="text-[10px] font-black text-muted-foreground group-hover:text-primary uppercase tracking-[0.2em]">Register Admin</span>
                             </button>
                             <button
-                                onClick={() => navigate('/users')}
+                                onClick={() => onNavigate('users')}
                                 className="group p-6 bg-secondary/30 hover:bg-card border border-border hover:border-primary rounded-xl transition-all duration-500 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-xl hover:-translate-y-1"
                             >
                                 <div className="p-4 bg-card rounded-lg shadow-md group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500">
@@ -138,4 +173,4 @@ const SuperAdminDashboard = ({ user, analytics, logs, handleExport, searchTerm, 
     );
 };
 
-export default SuperAdminDashboard;
+export default SuperAdminHome;

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { User } from 'lucide-react';
 import api from '@/lib/api';
 
-const UserDetails = () => {
+const AdminUserDetails = () => {
     const { username } = useParams();
     const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -113,4 +113,4 @@ const UserDetails = () => {
     );
 };
 
-export default UserDetails;
+export default AdminUserDetails;
