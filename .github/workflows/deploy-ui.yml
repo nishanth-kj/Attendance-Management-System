@@ -45,7 +45,7 @@ jobs:
       - name: Build UI
         run: |
           cd react
-          npm run build
+          npm run build -- --base=/Attendance-Management-System/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
