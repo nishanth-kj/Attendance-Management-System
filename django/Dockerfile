@@ -1,45 +1,49 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12-slim
+# ==========================================
+# Builder Stage
+# ==========================================
+FROM python:3.12-slim AS builder
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Get 'uv' binary
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Set work directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    libopenblas-dev \
-    liblapack-dev \
-    libx11-dev \
-    libgtk-3-dev \
-    libboost-python-dev \
-    python3-dev \
+# Copy lockfile and pyproject.toml
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies in a virtual environment
+RUN uv sync --frozen --no-install-project --no-dev
+
+# Copy application code
+COPY . .
+
+# Final sync to include project files
+RUN uv sync --frozen --no-dev
+
+
+# ==========================================
+# Final Runtime Stage
+# ==========================================
+FROM python:3.12-slim
+
+# Set optimal Python environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:$PATH"
+
+WORKDIR /app
+
+# Install strictly the necessary system dependencies (no bloat)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     libsm6 \
     libxext6 \
+    libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install UV
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+# Copy the pre-built virtual environment and application code
+COPY --from=builder /app /app
 
-# Copy project files
-COPY pyproject.toml .
-COPY uv.lock .
-
-# Install dependencies (excluding the windows wheels)
-# We use --no-install-project to only install dependencies
-RUN uv sync --no-install-project
-
-# Note: The windows wheels in ./library/ won't work here.
-# We need to install dlib and face-recognition from source/pip in Linux.
-RUN uv pip install dlib face-recognition
-
-# Copy the rest of the application
-COPY . .
-
-# Run the application
-CMD ["uv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Expose port and run production server
+EXPOSE 8000
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]

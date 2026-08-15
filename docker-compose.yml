@@ -1,8 +1,7 @@
-version: '3.8'
 
 services:
   db:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -35,10 +34,10 @@ services:
 
   frontend:
     build:
-      context: ./react-app
+      context: ./react
       dockerfile: Dockerfile
     volumes:
-      - ./react-app:/app
+      - ./react:/app
       - /app/node_modules
     ports:
       - "5173:5173"

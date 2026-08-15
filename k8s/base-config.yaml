@@ -12,14 +12,5 @@ data:
   DEBUG: "False"
   DATABASE_URL: "postgres://postgres:postgres@db-service:5432/attendance"
   ALLOWED_HOSTS: "*"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: backend-secrets
-  namespace: attendance-system
-type: Opaque
-data:
-  # echo -n 'your-secret-key' | base64
-  SECRET_KEY: TmlzaGFudGhLSg== # Base64 for 'NishanthKJ'
-  DB_PASSWORD: cG9zdGdyZXM= # Base64 for 'postgres'
+  SECRET_KEY: "NishanthKJ"
+  DB_PASSWORD: "postgres"

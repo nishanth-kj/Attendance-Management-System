@@ -12,4 +12,3 @@ db.sqlite3
 media/
 student_images/
 Attendance.csv
-uv.lock
