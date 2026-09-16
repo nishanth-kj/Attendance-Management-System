@@ -1,17 +1,10 @@
-from enum import Enum
+from .base_enum import BaseEnum
 
-class APIStatus(Enum):
+
+class APIStatus(BaseEnum):
     SUCCESS = (1, "Success")
     ERROR = (0, "Error")
 
-    def __init__(self, number: int, value: str):
-        self._number = number
-        self._value = value
-
     @property
     def number(self) -> int:
-        return self._number
-
-    @property
-    def value(self) -> str:
-        return self._value
+        return self._code

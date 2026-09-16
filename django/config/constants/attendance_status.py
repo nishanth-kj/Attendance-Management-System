@@ -1,10 +1,7 @@
-from enum import IntEnum
+from .base_enum import BaseEnum
 
-class AttendanceStatus(IntEnum):
-    PRESENT = 1
-    ABSENT = 2
-    LATE = 3
 
-    @classmethod
-    def choices(cls):
-        return [(key.value, key.name.title()) for key in cls]
+class AttendanceStatus(BaseEnum):
+    PRESENT = (1, "Present")
+    ABSENT = (2, "Absent")
+    LATE = (3, "Late")

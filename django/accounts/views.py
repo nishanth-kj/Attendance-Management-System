@@ -1,28 +1,32 @@
-from rest_framework import status
+from rest_framework import views
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
 
-from attendance.permissions import IsAdmin
-from config.utils import APIResponse
-from config.constants.api_status import APIStatus
+from accounts.permissions import IsAdmin
+from config.constants.error_code import ErrorCode
+from config.constants.error_message import ErrorMessage
+from config.constants.role import UserRole
+from config.exceptions.api_exception import APIException
+from config.utils.responses import APIResponse
+from config.utils.validation import Validator
 from .services import UserService, AuthService
 
 
-class RegisterView(APIView):
+class RegisterView(views.APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        v = Validator(request.data)
         result = UserService.create_user(
-            username=request.data.get('username'),
-            password=request.data.get('password'),
-            email=request.data.get('email', ''),
-            role=request.data.get('role', 3),
+            username=v.required('username'),
+            password=v.required('password', min_length=6),
+            email=v.optional('email', default=''),
+            role=v.integer('role', default=UserRole.USER.code),
+            image_input=v.optional('image_input'),
         )
-        if result.is_success:
-            return APIResponse(APIStatus.SUCCESS, data=result.data, status_code=status.HTTP_201_CREATED)
-        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
+        return APIResponse(result).success()
 
-class DemoView(APIView):
+
+class DemoView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -45,44 +49,45 @@ class DemoView(APIView):
             ],
             "note": "Use these credentials to explore the system functionality."
         }
-        return APIResponse(APIStatus.SUCCESS, data=data)
+        return APIResponse(data).success()
 
-class LoginView(APIView):
+
+class LoginView(views.APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        
-        result = AuthService.login_user(username, password)
-        if result.is_success:
-            return APIResponse(APIStatus.SUCCESS, data=result.data)
-        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
+        v = Validator(request.data)
+        result = AuthService.login_user(
+            request,
+            v.required('username'),
+            v.required('password')
+        )
+        return APIResponse(result).success()
 
-class UserInfoView(APIView):
+
+class UserInfoView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_data = UserService.user_to_dict(request.user)
-        return APIResponse(APIStatus.SUCCESS, data=user_data)
+        user_data = request.user.to_dict()
+        return APIResponse(user_data).success()
 
-class UserDetailView(APIView):
+
+class UserDetailView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        result = UserService.get_user_detail(pk)
-        if not result.is_success:
-            return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
-        
-        user_data = result.data
-        if request.user.role in [1, 2] or request.user.id == user_data['id']:
-            return APIResponse(APIStatus.SUCCESS, data=user_data)
-        return APIResponse(APIStatus.ERROR, error="Unauthorized", status_code=status.HTTP_403_FORBIDDEN)
+        is_admin = request.user.is_admin() if callable(request.user.is_admin) else bool(request.user.is_admin)
+        if not (is_admin or request.user.id == pk):
+            raise APIException(ErrorCode.UNAUTHORIZED, ErrorMessage.UNAUTHORIZED)
+
+        user_data = UserService.get_user_detail(pk)
+        return APIResponse(user_data).success()
 
     def delete(self, request, pk):
-        if request.user.role not in [1, 2]:
-            return APIResponse(APIStatus.ERROR, error="Only admins can delete users", status_code=status.HTTP_403_FORBIDDEN)
-        result = UserService.delete_user(pk)
-        if result.is_success:
-             return APIResponse(APIStatus.SUCCESS, data=None, status_code=status.HTTP_204_NO_CONTENT)
-        return APIResponse(APIStatus.ERROR, error=result.error, status_code=result.status_code)
+        is_admin = request.user.is_admin() if callable(request.user.is_admin) else bool(request.user.is_admin)
+        if not is_admin:
+            raise APIException(ErrorCode.UNAUTHORIZED, "Only admins can delete users")
+
+        UserService.delete_user(pk)
+        return APIResponse(None).success()

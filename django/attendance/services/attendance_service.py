@@ -1,51 +1,70 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+from django.utils import timezone
 
 from attendance.models import Log
 from attendance.services.biometric_service import BiometricService
-from config.utils.services import BaseService
+from config.constants.attendance_status import AttendanceStatus
+from config.constants.error_code import ErrorCode
+from config.constants.error_message import ErrorMessage
+from config.constants.role import UserRole
+from config.exceptions.api_exception import APIException
+from config.logger import logger
 
 User = get_user_model()
 
-class AttendanceService(BaseService):
+
+class AttendanceService:
+    """Attendance business logic service matching CareerSync API pattern."""
+
     @staticmethod
     def log_to_dict(log):
-        """Manual serialization for Log model"""
-        full_name = f"{log.user.first_name} {log.user.last_name}".strip()
-        display_name = full_name if full_name else log.user.username
-        
+        """Manual serialization for Log model."""
+        if hasattr(log, 'to_dict'):
+            return log.to_dict()
+
+        full_name = f"{log.user.first_name} {log.user.last_name}".strip() if log.user else ""
+        display_name = full_name if full_name else (log.user.username if log.user else "Unknown")
+
         return {
             'id': log.id,
-            'user': log.user.id,
-            'username': log.user.username,
+            'user': log.user.id if log.user else None,
+            'username': log.user.username if log.user else "Unknown",
             'user_name': display_name,
             'status': log.status,
-            'timestamp': log.timestamp.isoformat()
+            'timestamp': log.timestamp.isoformat() if log.timestamp else None,
         }
 
     @classmethod
     def mark_attendance(cls, image_data):
         if not image_data:
-            return cls.failure("No image data provided")
+            raise APIException(ErrorCode.VALIDATION_ERROR, "No image data provided", field="image")
 
+        logger.info("Extracting face encoding for biometric attendance...")
         # 1. Extract Encoding using BiometricService
         encoding = BiometricService.extract_encoding(image_data)
         if encoding is None:
-            return cls.failure("No face detected or invalid image")
+            logger.warning("Biometric attendance failed: No face detected.")
+            raise APIException(ErrorCode.FACE_NOT_DETECTED, ErrorMessage.FACE_NOT_DETECTED, field="image")
 
         # 2. Identify User using BiometricService
-        users = User.objects.filter(role=3).exclude(face_embedding__isnull=True)
+        users = User.objects.filter(role=UserRole.USER.code).exclude(face_embedding__isnull=True)
         user = BiometricService.identify_user(encoding, users)
 
-        if user:
-            Log.objects.create(user=user, status=1) # 1 = PRESENT
-            data = {
-                'username': user.username,
-                'role': user.role,
-                'name': f"{user.first_name} {user.last_name}".strip() or user.username,
-            }
-            return cls.success(data, f'Attendance marked for {user.username}')
+        if not user:
+            logger.warning("Biometric attendance failed: No match found.")
+            raise APIException(ErrorCode.NOT_FOUND, "No matching student found for biometric image")
 
-        return cls.failure("No match found", status_code=404)
+        log = Log.objects.create(user=user, status=AttendanceStatus.PRESENT.code)
+        logger.info(f"Attendance marked for user: {user.username} (log id: {log.id})")
+
+        return {
+            'username': user.username,
+            'role': user.role,
+            'name': f"{user.first_name} {user.last_name}".strip() or user.username,
+            'log': cls.log_to_dict(log)
+        }
 
     @classmethod
     def get_logs(cls, username=None):
@@ -53,19 +72,15 @@ class AttendanceService(BaseService):
             logs = Log.objects.filter(user__username=username).order_by('-timestamp')
         else:
             logs = Log.objects.all().order_by('-timestamp')
-        
-        return cls.success([cls.log_to_dict(l) for l in logs])
+
+        return [cls.log_to_dict(l) for l in logs]
 
     @classmethod
     def get_analytics(cls):
-        from django.db.models import Count
-        from django.db.models.functions import TruncDate
-        from django.utils import timezone
-        
         today = timezone.now().date()
-        total_users = User.objects.filter(role=3).count()
+        total_users = User.objects.filter(role=UserRole.USER.code).count()
         today_attendance = Log.objects.filter(timestamp__date=today).values('user').distinct().count()
-        
+
         # Monthly trend (last 30 days)
         last_30_days = timezone.now() - timezone.timedelta(days=30)
         daily_stats = Log.objects.filter(timestamp__gte=last_30_days) \
@@ -73,8 +88,8 @@ class AttendanceService(BaseService):
             .values('date') \
             .annotate(count=Count('user', distinct=True)) \
             .order_by('date')
-        
-        data = {
+
+        return {
             'summary': {
                 'total_users': total_users,
                 'today_present': today_attendance,
@@ -82,4 +97,3 @@ class AttendanceService(BaseService):
             },
             'trends': list(daily_stats)
         }
-        return cls.success(data)

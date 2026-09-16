@@ -1,36 +1,44 @@
 from rest_framework.response import Response
 from rest_framework import status
-from config.constants.api_status import APIStatus
-from config.constants.errors import ErrorCode
+
+from config.constants.response_status import ResponseStatus
+
 
 class APIResponse(Response):
     """
-    Standardized API Response.
-    Inherits from DRF Response.
-    Usage: return APIResponse(APIStatus.SUCCESS, data=...)
-    """
-    def __init__(self, api_status, data=None, error=None, status_code=status.HTTP_200_OK, **kwargs):
-        # Handle error formatting if it's an ErrorCode enum
-        error_payload = None
-        if error:
-            if isinstance(error, ErrorCode):
-                error_payload = {
-                    "code": error.number,
-                    "key": error.key,
-                    "message": error.message
-                }
-            elif isinstance(error, str):
-                error_payload = {
-                    "code": 0,
-                    "key": "GENERAL_ERROR",
-                    "message": error
-                }
-            else:
-                error_payload = error
+    Standardized API Response matching CareerSync API.
 
-        content = {
-            "status": api_status.number,
-            "data": data,
-            "error": error_payload
+    Views:
+        return APIResponse(data).success()
+        raise APIException(ErrorCode.INVALID_CREDENTIALS, ErrorMessage.INVALID_CREDENTIALS)
+    """
+
+    def __init__(self, data=None, **kwargs):
+        self.response_data = data
+        super().__init__(data=None, **kwargs)
+
+    def success(self):
+        self.data = {
+            "status": ResponseStatus.SUCCESS.code,
+            "data": self.response_data,
+            "error": None
         }
-        super().__init__(data=content, status=status_code, **kwargs)
+        self.status_code = status.HTTP_200_OK
+        return self
+
+    def failure(self):
+        error = self.response_data
+        message = getattr(error, "message", str(error)) if error else "An error occurred"
+        code = getattr(error, "code", 400) if error else 400
+        field = getattr(error, "field", None) if error else None
+        self.data = {
+            "status": ResponseStatus.ERROR.code,
+            "data": None,
+            "error": {
+                "message": message,
+                "code": code,
+                "field": field
+            }
+        }
+        self.status_code = status.HTTP_200_OK
+        return self
