@@ -7,7 +7,7 @@ from config.constants.status import Status
 
 
 class User(AbstractUser):
-    user_id = models.BigAutoField(primary_key=True, db_column='id')
+    user_id = models.BigAutoField(primary_key=True)
 
     SUPERADMIN = UserRole.SUPERADMIN.code
     ADMIN = UserRole.ADMIN.code
@@ -83,9 +83,9 @@ class User(AbstractUser):
             'status': self.status,
             'image_url': image_data,
             'created_at': self.created_at,
-            'created_by': self.created_by.user_id if self.created_by else None,
+            'created_by': getattr(self.created_by, 'user_id', getattr(self.created_by, 'id', None)) if self.created_by else None,
             'updated_at': self.updated_at,
-            'updated_by': self.updated_by.user_id if self.updated_by else None,
+            'updated_by': getattr(self.updated_by, 'user_id', getattr(self.updated_by, 'id', None)) if self.updated_by else None,
         }
 
     def __str__(self):

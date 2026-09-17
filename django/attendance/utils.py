@@ -1,23 +1,37 @@
 import base64
+import os
+import warnings
 import cv2
 import numpy as np
-from deepface import DeepFace
+
+# Suppress TensorFlow C++ logs, oneDNN notices, and Python deprecation warnings
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", module="tensorflow")
+warnings.filterwarnings("ignore", module="tf_keras")
 
 def get_face_encoding(image_file):
     """
     Given an image file (BytesIO), return the face encoding as a numpy array using DeepFace Facenet model.
     """
     try:
+        from typing import Any
+        from deepface import DeepFace
+
         # Read the BytesIO to a numpy array (OpenCV format)
         file_bytes = np.asarray(bytearray(image_file.read()), dtype=np.uint8)
         img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         
         # Extract embeddings using Facenet model with RetinaFace backend for highest detection accuracy
-        results = DeepFace.represent(img_path=img, model_name="Facenet", detector_backend="retinaface", enforce_detection=True)
+        results: Any = DeepFace.represent(img_path=img, model_name="Facenet", detector_backend="retinaface", enforce_detection=True)
         
         if results and len(results) > 0:
             # We take the first detected face's embedding
-            return np.array(results[0]["embedding"])
+            first_face: Any = results[0]
+            if isinstance(first_face, dict) and "embedding" in first_face:
+                return np.array(first_face["embedding"])
+            return np.array(first_face)
     except Exception as e:
         print(f"Face extraction error: {e}")
         

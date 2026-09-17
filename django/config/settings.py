@@ -1,3 +1,4 @@
+
 """
 Django settings for student_management_project project.
 
@@ -11,7 +12,15 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import warnings
 from pathlib import Path
+
+# Suppress TensorFlow C++ logs, oneDNN notices, and Python deprecation warnings
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", module="tensorflow")
+warnings.filterwarnings("ignore", module="tf_keras")
 
 try:
     from dotenv import load_dotenv

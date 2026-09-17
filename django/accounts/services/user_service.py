@@ -79,9 +79,9 @@ class UserService:
     @classmethod
     def get_user_list(cls, role=None):
         if role:
-            users = User.objects.filter(role=role).order_by('-id')
+            users = User.objects.filter(role=role).order_by('-user_id')
         else:
-            users = User.objects.all().order_by('-id')
+            users = User.objects.all().order_by('-user_id')
         return [cls.user_to_dict(u) for u in users]
 
     @classmethod

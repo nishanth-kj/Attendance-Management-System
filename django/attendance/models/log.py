@@ -6,7 +6,7 @@ from config.constants.attendance_status import AttendanceStatus
 
 
 class Log(models.Model):
-    log_id = models.BigAutoField(primary_key=True, db_column='id')
+    log_id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -15,7 +15,6 @@ class Log(models.Model):
         blank=True
     )
     timestamp = models.DateTimeField(auto_now_add=True)
-    timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     status = models.IntegerField(
         choices=AttendanceStatus.choices(),
         default=AttendanceStatus.PRESENT.code
@@ -52,23 +51,24 @@ class Log(models.Model):
     def to_dict(self):
         full_name = f"{self.user.first_name} {self.user.last_name}".strip() if self.user else ""
         display_name = full_name if full_name else (self.user.username if self.user else "Unknown")
+        user_pk = getattr(self.user, 'user_id', getattr(self.user, 'id', None)) if self.user else None
+        created_by_pk = getattr(self.created_by, 'user_id', getattr(self.created_by, 'id', None)) if self.created_by else None
+        updated_by_pk = getattr(self.updated_by, 'user_id', getattr(self.updated_by, 'id', None)) if self.updated_by else None
+
         return {
-            'id': self.id,
-            'user': self.user.id if self.user else None,
             'log_id': self.log_id,
             'id': self.log_id,
-            'user': self.user.user_id if self.user else None,
-            'user_id': self.user.user_id if self.user else None,
+            'user': user_pk,
+            'user_id': user_pk,
             'username': self.user.username if self.user else "Unknown",
             'user_name': display_name,
             'status': self.status,
             'created_at': self.created_at,
-            'created_by': self.created_by.user_id if self.created_by else None,
+            'created_by': created_by_pk,
             'updated_at': self.updated_at,
-            'updated_by': self.updated_by.user_id if self.updated_by else None,
+            'updated_by': updated_by_pk,
             'timestamp': self.timestamp.isoformat() if self.timestamp else None,
         }
 
     def __str__(self):
         return f'{self.user.username if self.user else "Unknown"} - {self.timestamp}'
-        return f'{self.user.username if self.user else "Unknown"} - {self.created_at}'
