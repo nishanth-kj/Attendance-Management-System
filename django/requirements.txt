@@ -13,5 +13,5 @@ opencv-python==4.10.0.84
 pillow==10.4.0
 platformdirs==4.2.2
 pylint==3.2.5
-setuptools==70.3.0
+setuptools==84.1.0
 tomlkit==0.13.0
